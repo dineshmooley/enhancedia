@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import { RouterPath } from "@/lib/RouterConst";
 import { cn } from "@/lib/utils";
 
 export function MainNav({
@@ -12,25 +12,25 @@ export function MainNav({
       {...props}
     >
       <Link
-        href=""
+        href={RouterPath.Home}
         className="text-md font-medium transition-colors hover:text-primary"
       >
         Home
       </Link>
       <Link
-        href=""
+        href={RouterPath.Tests}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Test
       </Link>
       <Link
-        href=""
+        href={RouterPath.Departments}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Departments
       </Link>
       <Link
-        href=""
+        href={RouterPath.Students}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Students
