@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { MainNav } from "@/components/ui/Main-nav";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { MainNav } from "./ui/Main-nav";
+import { ModeToggle } from "./ui/mode-toggle";
 
 const Header = () => {
   return (

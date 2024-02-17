@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../../lib/utils";
 //import { Icons } from "@/components/ui/icons"
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "./button";
+import { Input } from "./input";
+import { Label } from "./label";
 import {
   Card,
   CardContent,
@@ -15,12 +16,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "./card";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [formdata, setFormdata] = useState({ email: null, password: null });
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -42,11 +44,21 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="name">Licet Email</Label>
-              <Input id="name" />
+              <Input
+                id="name"
+                onChange={(e) => {
+                  setFormdata({ ...formdata, email: e.target.value });
+                }}
+              />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="username">Password</Label>
-              <Input id="username" />
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                onChange={(e) => {
+                  setFormdata({ ...formdata, password: e.target.value });
+                }}
+              />
             </div>
           </CardContent>
           <CardFooter>

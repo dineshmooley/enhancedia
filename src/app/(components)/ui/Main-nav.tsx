@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { RouterPath } from "@/lib/RouterConst";
-import { cn } from "@/lib/utils";
+import { RouterPath } from "../../../lib/RouterConst";
+import { cn } from "../../../lib/utils";
 
 export function MainNav({
   className,

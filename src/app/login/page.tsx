@@ -1,7 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { UserAuthForm } from "@/components/ui/user-auth-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserAuthForm } from "../(components)/ui/user-auth-form";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../(components)/ui/tabs";
 
 const login = () => {
   return (
