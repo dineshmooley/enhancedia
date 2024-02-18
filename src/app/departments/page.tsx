@@ -1,22 +1,11 @@
-<<<<<<< HEAD:src/app/departments/page.tsx
-import React from "react";
+"use client";
 
-const Departments = () => {
-  return (
-    <>
-      <div>hello this is departments page</div>
-    </>
-  );
-};
-=======
-"use client"
- 
-import * as React from "react"
+import * as React from "react";
 import {
   CaretSortIcon,
   ChevronDownIcon,
   DotsHorizontalIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -28,10 +17,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
- 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@tanstack/react-table";
+
+import { Button } from "../(components)/ui/button";
+import { Checkbox } from "../(components)/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -40,8 +29,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "../(components)/ui/dropdown-menu";
+import { Input } from "../(components)/ui/input";
 import {
   Table,
   TableBody,
@@ -49,8 +38,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
->>>>>>> 1690c43d82d82852c148ad8b6967289342b6afb9:src/pages/departments/index.tsx
+} from "../(components)/ui/table";
 
 const data: Payment[] = [
   {
@@ -83,23 +71,26 @@ const data: Payment[] = [
     status: "failed",
     email: "carmella@hotmail.com",
   },
-]
- 
+];
+
 export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
- 
+  id: string;
+  amount: number;
+  status: "pending" | "processing" | "success" | "failed";
+  email: string;
+};
+
 export const columns: ColumnDef<Payment>[] = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomePageRowsSelected()
+            ? "indeterminate"
+            : false
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -133,7 +124,7 @@ export const columns: ColumnDef<Payment>[] = [
           Email
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
@@ -141,23 +132,23 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "amount",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
- 
+      const amount = parseFloat(row.getValue("amount"));
+
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(amount)
- 
-      return <div className="text-right font-medium">{formatted}</div>
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const payment = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -178,20 +169,20 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
- 
-function departments() {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+];
+
+export default function Departments() {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
- 
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
   const table = useReactTable({
     data,
     columns,
@@ -209,8 +200,8 @@ function departments() {
       columnVisibility,
       rowSelection,
     },
-  })
- 
+  });
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -244,7 +235,7 @@ function departments() {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -264,7 +255,7 @@ function departments() {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -324,8 +315,5 @@ function departments() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
-
-export default departments;
