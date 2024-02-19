@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import prisma from "../../../../../prisma/Prisma";
+import prisma from "../../../../prisma/Prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    return NextResponse.json({ message: "GET request" }, { status: 200 });
+    const users = await prisma.staff.findMany();
+    return NextResponse.json({ message: users }, { status: 200 });
   } catch (err) {
     console.log(err);
   }

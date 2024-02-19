@@ -24,25 +24,29 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [formdata, setFormdata] = useState({ email: null, password: null });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [ErrorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
     setIsLoading(true);
     try {
-      console.log("the user email is ", formdata.email, " ", formdata.password);
+      console.log(
+        "the user email is ",
+        credentials.email,
+        " ",
+        credentials.password
+      );
       event.preventDefault();
       const res = await signIn("credentials", {
-        useremail: formdata.email,
-        password: formdata.password,
+        ...credentials,
         redirect: false,
       });
       if (res.error) {
         setErrorMessage(res.error);
+      } else {
+        router.push("/");
       }
-      router.refresh();
-      router.push("/");
     } catch (e) {
       setErrorMessage("Invalid Credentials");
     }
@@ -67,7 +71,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 id="name"
                 type="email"
                 onChange={(e) => {
-                  setFormdata({ ...formdata, email: e.target.value });
+                  setCredentials({ ...credentials, email: e.target.value });
                 }}
               />
             </div>
@@ -77,7 +81,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 id="password"
                 type="password"
                 onChange={(e) => {
-                  setFormdata({ ...formdata, password: e.target.value });
+                  setCredentials({ ...credentials, password: e.target.value });
                 }}
               />
             </div>
