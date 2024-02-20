@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { RouterPath } from "../../../lib/RouterConst";
 import { cn } from "../../../lib/utils";
+import { Button } from "./button";
+import { signOut } from "next-auth/react";
 
 export function MainNav({
   className,
@@ -35,6 +37,7 @@ export function MainNav({
       >
         Students
       </Link>
+      <Button onClick={() => signOut()}>Logout</Button>
     </nav>
   );
 }
