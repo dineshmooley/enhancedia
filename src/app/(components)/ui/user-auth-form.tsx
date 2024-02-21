@@ -40,7 +40,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       event.preventDefault();
       const res = await signIn("credentials", {
         ...credentials,
-        redirect: false,
+        redirect: true,
+        callbackUrl: "/",
       });
       if (res.error) {
         setErrorMessage(res.error);
