@@ -29,6 +29,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
+    event.preventDefault();
     setIsLoading(true);
     try {
       console.log(
@@ -37,18 +38,18 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         " ",
         credentials.password
       );
-      event.preventDefault();
       const res = await signIn("credentials", {
         ...credentials,
         redirect: true,
         callbackUrl: "/",
       });
-      if (res.error) {
+      if (res.error !== null) {
         setErrorMessage(res.error);
       } else {
         router.push("/");
       }
     } catch (e) {
+      console.log("error is ", e);
       setErrorMessage("Invalid Credentials");
     }
     setTimeout(() => {
@@ -79,7 +80,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
               <Input
-                id="password"
+                id="pswd"
                 type="password"
                 onChange={(e) => {
                   setCredentials({ ...credentials, password: e.target.value });
