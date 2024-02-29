@@ -6,6 +6,19 @@ import {
   CardHeader,
   CardTitle,
 } from "../(components)/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../(components)/ui/dialog";
+import { Input } from "../(components)/ui/input";
+import { Label } from "../(components)/ui/label";
+import { Plus } from "lucide-react";
+import { Button } from "../(components)/ui/button";
 
 const Departments = () => {
   const dept = [
@@ -17,7 +30,12 @@ const Departments = () => {
   ];
   return (
     <div className="container">
-      <h1 className="text-5xl my-16">Departments</h1>
+      <div className="flex">
+        <h1 className="text-5xl my-16">Departments</h1>
+        <Button variant="outline" size="icon">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
       <div className="flex">
         {dept.map((depts) => (
           <Card className="hover:bg-slate-500  ml-6">
