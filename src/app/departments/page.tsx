@@ -30,8 +30,8 @@ const Departments = () => {
   ];
   return (
     <div className="container">
-      <div className="flex">
-        <h1 className="text-5xl my-16">Departments</h1>
+      <div className="flex my-16 justify-between">
+        <h1 className="text-5xl">Departments</h1>
         <Button variant="outline" size="icon">
           <Plus className="h-4 w-4" />
         </Button>

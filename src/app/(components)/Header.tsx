@@ -5,6 +5,7 @@ import { MainNav } from "./ui/Main-nav";
 import { ModeToggle } from "./ui/mode-toggle";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import { UserDrop } from "./ui/user-drop";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -20,9 +21,7 @@ const Header = () => {
               <MainNav className="mx-6" />
               <div className="flex items-center">
                 <ModeToggle />
-                <Button variant="outline" size="icon" className=" ml-3">
-                  S
-                </Button>
+                <UserDrop className = "ml-4"/>
               </div>
             </div>
           </div>
