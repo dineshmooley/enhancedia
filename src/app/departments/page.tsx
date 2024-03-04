@@ -38,7 +38,7 @@ const Departments = () => {
       </div>
       <div className="flex">
         {dept.map((depts) => (
-          <Card className="hover:bg-slate-500  ml-6">
+          <Card className="hover:bg-slate-500 ml-6">
             <CardHeader>
               <CardTitle>{depts}</CardTitle>
             </CardHeader>
