@@ -13,8 +13,9 @@ model staff{
       email String @unique
       name String
       role String
+      departmentId String @db.ObjectId
+      department departments @relation(fields: [departmentId], references: [id])
       password String
-
 }
 
 model student{
@@ -23,4 +24,24 @@ model student{
     name String
     password String
     role String
+    classId String @db.ObjectId
+    class classes @relation(fields: [classId],references: [id])
+}
+
+model departments{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String @unique
+    classes classes[]
+    staffs staff[]
+}
+
+model classes{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    regulation Int
+    batch Int
+    section String?
+    archived Boolean @default(false)
+    departmentId String @db.ObjectId
+    department departments @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+    students student[]
 }

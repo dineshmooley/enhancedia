@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { cn } from "../../../lib/utils";
 //import { Icons } from "@/components/ui/icons"
@@ -24,33 +24,40 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [ErrorMessage, setErrorMessage] = useState(null);
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+    queryrole: "",
+  });
+  const [ErrorMessage, setErrorMessage] = useState<String>("");
   const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
     try {
+      console.log("the props data is ", props.role);
       console.log(
         "the user email is ",
         credentials.email,
         " ",
-        credentials.password
+        credentials.password,
+        " ",
+        credentials.queryrole
       );
       const res = await signIn("credentials", {
         ...credentials,
-        redirect: true,
+        redirect: false,
         callbackUrl: "/",
       });
-      if (res.error !== null) {
+      if (res?.error !== null) {
         setErrorMessage(res.error);
       } else {
         router.push("/");
       }
     } catch (e) {
-      console.log("error is ", e);
       setErrorMessage("Invalid Credentials");
+      console.log("error is ", e);
     }
     setTimeout(() => {
       setIsLoading(false);
@@ -89,7 +96,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </div>
           </CardContent>
           <CardFooter>
-            <Button disabled={isLoading}>
+            <Button
+              disabled={isLoading}
+              onClick={() => {
+                setCredentials({ ...credentials, queryrole: props.role });
+              }}
+            >
               {isLoading && <Loader2 />}
               Sign In
             </Button>

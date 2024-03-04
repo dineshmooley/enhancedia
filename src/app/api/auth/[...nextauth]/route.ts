@@ -10,6 +10,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   providers: [
     CredentialsProvider({
@@ -17,26 +18,38 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        queryrole: { label: "QueryRole", type: "string" },
       },
       authorize: async (credentials) => {
         const useremail = credentials.email;
         const password = credentials.password;
+        const role = credentials.queryrole;
         if (!useremail || !password) {
           return null;
         }
 
-        const user = await prisma.staff.findUnique({
-          where: {
-            email: useremail,
-          },
-        });
-
-        if (user && (await bcrypt.compare(password, user.password))) {
-          console.log("the user is ", user);
-          return user;
-        } else {
-          return null;
+        if (role == "staff") {
+          const user = await prisma.staff.findUnique({
+            where: {
+              email: useremail,
+            },
+          });
+          if (user && (await bcrypt.compare(password, user.password))) {
+            console.log("the user is ", user);
+            return user;
+          }
+        } else if (role == "student") {
+          const user = await prisma.student.findUnique({
+            where: {
+              email: useremail,
+            },
+          });
+          if (user && (await bcrypt.compare(password, user.password))) {
+            console.log("the user is ", user);
+            return user;
+          }
         }
+        throw new Error("invalid credentials provided");
       },
     }),
   ],
