@@ -11,12 +11,12 @@ datasource db{
 model staff{
       id  String  @id @default(auto()) @map("_id") @db.ObjectId
       email String @unique
+      password String
       name String
       role String
-      departmentId String @db.ObjectId
-      department departments @relation(fields: [departmentId], references: [id])
-      password String
-}
+      departmentId String? @db.ObjectId
+        department departments? @relation(fields: [departmentId], references: [id])
+    }
 
 model student{
     id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -24,8 +24,8 @@ model student{
     name String
     password String
     role String
-    classId String @db.ObjectId
-    class classes @relation(fields: [classId],references: [id])
+    classId String? @db.ObjectId
+    class classes? @relation(fields: [classId],references: [id])
 }
 
 model departments{
