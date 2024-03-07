@@ -58,9 +58,9 @@ export default function Students() {
           </TableRow>
         </TableHeader>
 
-        {data.map((entry) => {
+        {data.map((entry, i) => {
           return (
-            <TableBody>
+            <TableBody key={i}>
               <TableRow>
                 <TableCell className="font-medium">{entry.slNo}</TableCell>
                 <TableCell>{entry.regNo}</TableCell>

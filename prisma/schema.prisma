@@ -11,11 +11,12 @@ datasource db{
 model staff{
       id  String  @id @default(auto()) @map("_id") @db.ObjectId
       email String @unique
+      password String
       name String
       role String
-      password String
-
-}
+      departmentId String? @db.ObjectId
+        department departments? @relation(fields: [departmentId], references: [id])
+    }
 
 model student{
     id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -23,4 +24,54 @@ model student{
     name String
     password String
     role String
+    classId String? @db.ObjectId
+    class classes? @relation(fields: [classId],references: [id])
 }
+
+model departments{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String @unique
+    classes classes[]
+    staffs staff[]
+}
+
+model classes{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    regulation Int
+    batch Int
+    section String?
+    archived Boolean @default(false)
+    departmentId String @db.ObjectId
+    department departments @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+    students student[]
+    tests test[]
+}
+
+model test{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    created_at DateTime
+    start_time DateTime
+    end_time DateTime
+    classId String @db.ObjectId
+    class classes @relation(fields: [classId], references: [id])
+    //questions questions[]
+}
+
+// model questions{
+//     id String @id @default(auto()) @map("_id") @db.ObjectId
+//     question String
+//     choice String[]
+//     marks Int
+//     testId String @db.ObjectId
+//     test test @relation(fields: [testId], references: [id])
+//     choices choices[]
+// }
+
+// model choices{
+//     id String @id @default(auto()) @map("_id") @db.ObjectId
+//     correct Boolean
+//     option String
+//     questionId String @db.ObjectId
+//     question questions @relation(fields: [questionId], references: [id])
+// }

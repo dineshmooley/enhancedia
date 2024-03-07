@@ -40,8 +40,8 @@ const Departments = () => {
         </div>
       </div>
       <div className="flex">
-        {dept.map((depts) => (
-          <Card className="hover:bg-slate-500 ml-6">
+        {dept.map((depts, i) => (
+          <Card className="hover:bg-slate-500 ml-6" key={i}>
             <CardHeader>
               <CardTitle>{depts}</CardTitle>
             </CardHeader>

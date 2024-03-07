@@ -56,10 +56,10 @@ const login = () => {
                 <TabsTrigger value="Student">Student</TabsTrigger>
               </TabsList>
               <TabsContent value="Faculty">
-                <UserAuthForm />
+                <UserAuthForm role="staff" />
               </TabsContent>
               <TabsContent value="Student">
-                <UserAuthForm />
+                <UserAuthForm role="student" />
               </TabsContent>
             </Tabs>
             <p className="px-8 text-center text-sm text-muted-foreground">
