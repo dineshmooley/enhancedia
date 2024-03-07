@@ -37,7 +37,6 @@ export function MainNav({
       >
         Students
       </Link>
-      <Button onClick={() => signOut()}>Logout</Button>
     </nav>
   );
 }

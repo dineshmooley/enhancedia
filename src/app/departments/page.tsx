@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../(components)/ui/card";
+
 import {
   Dialog,
   DialogContent,
@@ -32,9 +33,11 @@ const Departments = () => {
     <div className="container">
       <div className="flex my-16 justify-between">
         <h1 className="text-5xl">Departments</h1>
-        <Button variant="outline" size="icon">
-          <Plus className="h-4 w-4" />
-        </Button>
+        <div>
+          <Button variant="outline" size="icon">
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <div className="flex">
         {dept.map((depts) => (

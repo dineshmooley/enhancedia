@@ -24,8 +24,10 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <Header />
-              <div>{children}</div>
+              
+                <Header />
+                <div>{children}</div>
+              
             </ThemeProvider>
           </NextAuthSessionProvider>
         </body>
