@@ -50,28 +50,30 @@ model classes{
 model test{
     id String @id @default(auto()) @map("_id") @db.ObjectId
     name String
+    description String
     created_at DateTime
     start_time DateTime
     end_time DateTime
     classId String @db.ObjectId
     class classes @relation(fields: [classId], references: [id])
-    //questions questions[]
+    questions questions[]
 }
 
-// model questions{
-//     id String @id @default(auto()) @map("_id") @db.ObjectId
-//     question String
-//     choice String[]
-//     marks Int
-//     testId String @db.ObjectId
-//     test test @relation(fields: [testId], references: [id])
-//     choices choices[]
-// }
+model questions{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    question String
+    marks Int
+    topic String
+    choice String[]
+    testId String? @db.ObjectId
+    test test? @relation(fields: [testId], references: [id])
+    choices choices[]
+}
 
-// model choices{
-//     id String @id @default(auto()) @map("_id") @db.ObjectId
-//     correct Boolean
-//     option String
-//     questionId String @db.ObjectId
-//     question questions @relation(fields: [questionId], references: [id])
-// }
+model choices{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    correct Boolean
+    option String
+    questionId String @db.ObjectId
+    question questions @relation(fields: [questionId], references: [id])
+}
