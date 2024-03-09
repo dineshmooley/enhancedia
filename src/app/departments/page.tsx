@@ -17,20 +17,33 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "../(components)/ui/dialog";
 import { Input } from "../(components)/ui/input";
 import { Label } from "../(components)/ui/label";
 import { Plus } from "lucide-react";
 import { Button } from "../(components)/ui/button";
+import { useState } from "react";
 
 const Departments = () => {
-  const dept = [
+  const [data, setData] = useState("");
+  const [dept, setDept] = useState([
     "Information Technology",
     "Computer Science Engineering",
     "Electrical and Electronics Engineering",
     "Electronics and Communication Engineering",
     "Mechanical Engineering",
-  ];
+  ]);
+
+  function handleChange(event) {
+    setData(event.target.value);
+  }
+
+  function handleClick(event) {
+    setDept([...dept, data]);
+    setData("");
+  }
+
   return (
     <div className="container">
       <div className="flex my-16 justify-between">
@@ -54,11 +67,28 @@ const Departments = () => {
                   <Label htmlFor="name" className="text-right">
                     Name
                   </Label>
-                  <Input id="name" className="col-span-3" />
+                  <Input
+                    value={data}
+                    onChange={handleChange}
+                    className="col-span-3"
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <DialogClose asChild>
+                  <Button type="button" variant="ghost">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    onClick={handleClick}
+                  >
+                    Create
+                  </Button>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
