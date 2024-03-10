@@ -54,6 +54,8 @@ model test{
     created_at DateTime
     start_time DateTime
     end_time DateTime
+    score Int?
+    Total Int
     classId String @db.ObjectId
     class classes @relation(fields: [classId], references: [id])
     questions questions[]
