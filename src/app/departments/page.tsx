@@ -40,8 +40,10 @@ const Departments = () => {
   }
 
   function handleClick(event) {
-    setDept([...dept, data]);
-    setData("");
+    if (data !== "") {
+      setDept([...dept, data]);
+      setData("");
+    }
   }
 
   return (
@@ -94,7 +96,7 @@ const Departments = () => {
           </Dialog>
         </div>
       </div>
-      <div className="flex">
+      <div className="flex flex-wrap">
         {dept.map((depts, i) => (
           <Card className="hover:bg-slate-500 ml-6" key={i}>
             <CardHeader>

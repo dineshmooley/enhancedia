@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "./dropdown-menu";
-
+import Link from "next/link";
 export function UserDrop(props) {
   return (
     <div className={props.className}>
@@ -23,7 +23,9 @@ export function UserDrop(props) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="w-65">My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href='/profile/1'>Profile</Link>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
