@@ -2,9 +2,6 @@
 
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../(components)/ui/card";
@@ -96,11 +93,11 @@ const Departments = () => {
           </Dialog>
         </div>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex">
         {dept.map((depts, i) => (
           <Card className="hover:bg-slate-500 ml-6" key={i}>
             <CardHeader>
-              <CardTitle>{depts}</CardTitle>
+              <CardTitle className="text-balance">{depts}</CardTitle>
             </CardHeader>
           </Card>
         ))}
