@@ -1,11 +1,12 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+import { getDepartments,addDepartment } from "../../lib/services/departments/service";
 import {
   Card,
   CardHeader,
   CardTitle,
 } from "../(components)/ui/card";
-
 import {
   Dialog,
   DialogContent,
@@ -20,26 +21,48 @@ import { Input } from "../(components)/ui/input";
 import { Label } from "../(components)/ui/label";
 import { Plus } from "lucide-react";
 import { Button } from "../(components)/ui/button";
-import { useState } from "react";
 
-const Departments = () => {
+
+export default function Departments() {
   const [data, setData] = useState("");
-  const [dept, setDept] = useState([
-    "Information Technology",
-    "Computer Science Engineering",
-    "Electrical and Electronics Engineering",
-    "Electronics and Communication Engineering",
-    "Mechanical Engineering",
-  ]);
+  const [dept, setDept] = useState<any>(null);
+  const getDepartmentList = async () => {
+    try{
+      const res = await getDepartments();
+      if(res){
+        setDept(res);
+      }
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+  const addDepartmentName = async (name: string) => {
+    try{
+      console.log(name);
+      const res = await addDepartment(name);
+      if(res){
+        getDepartmentList();
+      }
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getDepartmentList();
+  }
+  , [dept]);
+  
 
   function handleChange(event) {
     setData(event.target.value);
   }
 
-  function handleClick(event) {
+  async function handleClick(event) {
     if (data !== "") {
-      setDept([...dept, data]);
-      setData("");
+      addDepartmentName(data);
     }
   }
 
@@ -82,7 +105,6 @@ const Departments = () => {
                 <DialogClose asChild>
                   <Button
                     type="submit"
-                    variant="secondary"
                     onClick={handleClick}
                   >
                     Create
@@ -94,10 +116,10 @@ const Departments = () => {
         </div>
       </div>
       <div className="flex">
-        {dept.map((depts, i) => (
+        {dept?.map((depts, i) => (
           <Card className="hover:bg-slate-500 ml-6" key={i}>
             <CardHeader>
-              <CardTitle className="text-balance">{depts}</CardTitle>
+              <CardTitle className="text-balance">{depts.name}</CardTitle>
             </CardHeader>
           </Card>
         ))}
@@ -105,5 +127,3 @@ const Departments = () => {
     </div>
   );
 };
-
-export default Departments;
