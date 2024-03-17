@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getDepartments,addDepartment } from "../../lib/services/departments/service";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-} from "../(components)/ui/card";
+  getDepartments,
+  addDepartment,
+} from "../../lib/services/departments/service";
+import { Card, CardHeader, CardTitle } from "../(components)/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -21,40 +20,36 @@ import { Input } from "../(components)/ui/input";
 import { Label } from "../(components)/ui/label";
 import { Plus } from "lucide-react";
 import { Button } from "../(components)/ui/button";
-
+import Link from "next/link";
 
 export default function Departments() {
   const [data, setData] = useState("");
   const [dept, setDept] = useState<any>(null);
   const getDepartmentList = async () => {
-    try{
+    try {
       const res = await getDepartments();
-      if(res){
+      if (res) {
         setDept(res);
       }
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
   const addDepartmentName = async (name: string) => {
-    try{
+    try {
       console.log(name);
       const res = await addDepartment(name);
-      if(res){
+      if (res) {
         getDepartmentList();
       }
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     getDepartmentList();
-  }
-  , [dept]);
-  
+  }, []);
 
   function handleChange(event) {
     setData(event.target.value);
@@ -103,10 +98,7 @@ export default function Departments() {
                   </Button>
                 </DialogClose>
                 <DialogClose asChild>
-                  <Button
-                    type="submit"
-                    onClick={handleClick}
-                  >
+                  <Button type="submit" onClick={handleClick}>
                     Create
                   </Button>
                 </DialogClose>
@@ -117,13 +109,15 @@ export default function Departments() {
       </div>
       <div className="flex">
         {dept?.map((depts, i) => (
-          <Card className="hover:bg-slate-500 ml-6" key={i}>
-            <CardHeader>
-              <CardTitle className="text-balance">{depts.name}</CardTitle>
-            </CardHeader>
-          </Card>
+          <Link href={`/departments/${depts.id}`} key={i}>
+            <Card className="hover:bg-slate-500 ml-6">
+              <CardHeader>
+                <CardTitle className="text-balance">{depts.name}</CardTitle>
+              </CardHeader>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
   );
-};
+}
