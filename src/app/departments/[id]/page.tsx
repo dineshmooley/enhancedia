@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../(components)/ui/dropdown-menu";
-
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "../../(components)/ui/button";
 import { Input } from "../../(components)/ui/input";
@@ -29,13 +29,20 @@ import Link from "next/link";
 import {
   getDepartmentById,
   addClass,
+  deleteDepartment,
+  editDepartment,
 } from "../../../lib/services/departments/service";
 
 export default function Department({ params }: { params: { id: string } }) {
   const [data, setData] = useState<any>({ departmentId: params.id });
   const [classes, setClasses] = useState<any>(null);
-  const [dialogData, setDialogData] = useState<any>(null);
+  const [dialogData, setDialogData] = useState<any>({
+    title: "",
+    description: "",
+    work: "",
+  });
   const id = params.id;
+  const router = useRouter();
 
   const getClassesList = async () => {
     try {
@@ -61,8 +68,35 @@ export default function Department({ params }: { params: { id: string } }) {
     }
   };
 
+  const EditDepartment = async (id: string, data: any) => {
+    try {
+      const res = await editDepartment(id, data);
+      if (res) {
+        getClassesList();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteDept = async (id: string) => {
+    try {
+      const res = await deleteDepartment(id);
+      if (res) {
+        router.push("/departments");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getClassesList();
+    setDialogData({
+      title: "",
+      description: "",
+      work: "",
+    });
   }, []);
 
   return (
@@ -78,74 +112,125 @@ export default function Department({ params }: { params: { id: string } }) {
               <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>options</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      Edit
-                    </Button>
-                  </DialogTrigger>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <DialogTrigger asChild>
-                    <Button variant="destructive" size="icon">
-                      Delete
-                    </Button>
-                  </DialogTrigger>
-                </DropdownMenuItem>
+                <DialogTrigger
+                  asChild
+                  onClick={() => {
+                    setDialogData({
+                      title: "Edit Department",
+                      description: "Edit the details",
+                      work: "edit",
+                    });
+                  }}
+                >
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                </DialogTrigger>
+                <DialogTrigger
+                  asChild
+                  onClick={() => {
+                    setDialogData({
+                      title: "Delete Department",
+                      description: "Delete the department",
+                      work: "delete",
+                    });
+                  }}
+                >
+                  <DropdownMenuItem className="my-2 bg-destructive">
+                    Delete
+                  </DropdownMenuItem>
+                </DialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
           <div>
-            <DialogTrigger asChild>
+            <DialogTrigger
+              asChild
+              onClick={() => {
+                setDialogData({
+                  title: "Add class",
+                  description: "Enter details",
+                  work: "add",
+                });
+              }}
+            >
               <Button variant="outline" size="icon">
                 <Plus className="h-4 w-4" />
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Add Class</DialogTitle>
-                <DialogDescription>Enter details</DialogDescription>
+                <DialogTitle>{dialogData.title}</DialogTitle>
+                <DialogDescription>{dialogData.description}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Regulation
-                  </Label>
-                  <Input
-                    type="number"
-                    onChange={(e) => {
-                      setData({
-                        ...data,
-                        regulation: parseInt(e.target.value),
-                      });
-                    }}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Batch
-                  </Label>
-                  <Input
-                    type="number"
-                    onChange={(e) => {
-                      setData({ ...data, batch: parseInt(e.target.value) });
-                    }}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Section
-                  </Label>
-                  <Input
-                    type="text"
-                    onChange={(e) => {
-                      setData({ ...data, section: e.target.value });
-                    }}
-                    className="col-span-3"
-                  />
-                </div>
+                {dialogData.work == "add" ? (
+                  <>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Regulation
+                      </Label>
+                      <Input
+                        type="number"
+                        onChange={(e) => {
+                          setData({
+                            ...data,
+                            regulation: parseInt(e.target.value),
+                          });
+                        }}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Batch
+                      </Label>
+                      <Input
+                        type="number"
+                        onChange={(e) => {
+                          setData({ ...data, batch: parseInt(e.target.value) });
+                        }}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Section
+                      </Label>
+                      <Input
+                        type="text"
+                        onChange={(e) => {
+                          setData({ ...data, section: e.target.value });
+                        }}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </>
+                ) : dialogData.work == "edit" ? (
+                  <>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Name
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder={classes.name}
+                        onChange={(e) => {
+                          setData({
+                            name: e.target.value,
+                          });
+                        }}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </>
+                ) : dialogData.work == "delete" ? (
+                  <>
+                    <div className="">
+                      <Label htmlFor="name" className="text-right">
+                        Are you sure want to delete it?
+                      </Label>
+                    </div>
+                  </>
+                ) : null}
               </div>
               <DialogFooter>
                 <DialogClose asChild>
@@ -157,10 +242,16 @@ export default function Department({ params }: { params: { id: string } }) {
                   <Button
                     type="submit"
                     onClick={() => {
-                      CreateClass(data);
+                      dialogData.work == "add"
+                        ? CreateClass(data)
+                        : dialogData.work == "edit"
+                        ? EditDepartment(id, data)
+                        : dialogData.work == "delete"
+                        ? deleteDept(id)
+                        : null;
                     }}
                   >
-                    Create
+                    {dialogData.work}
                   </Button>
                 </DialogClose>
               </DialogFooter>

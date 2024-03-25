@@ -33,6 +33,15 @@ export const deleteDepartment = async (id: string) => {
   return data;
 };
 
+export const editDepartment = async (id: string, data: any) => {
+  const res = await fetch(`${URL}/api/departments/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  const resData = await res.json();
+  return resData;
+};
+
 export const addClass = async (data: any) => {
   const res = await fetch(`${URL}/api/departments/${data.departmentId}`, {
     method: "POST",
