@@ -85,10 +85,10 @@ const QA = [
 const Tests = () => {
   return (
     <div className="container">
-      <div className="row justify-content-center align-items-start">
+      <div className="flex flex-col justify-center items-center mt-2">
         {QA.map((qa) => {
           return (
-            <Card className=" col-4 w-[350px] mt-8" key={qa.qno}>
+            <Card className="col-4 w-[350px] mt-8" key={qa.qno}>
               <CardHeader>
                 <CardTitle>Question {qa.qno}</CardTitle>
               </CardHeader>
