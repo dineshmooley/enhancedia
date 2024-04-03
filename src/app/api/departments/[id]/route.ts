@@ -64,7 +64,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     const body = await request.json();
     const token = await getToken({
@@ -73,7 +76,7 @@ export async function PUT(request: NextRequest) {
     });
     if (token.role == "admin") {
       const department = await prisma.departments.update({
-        where: { id: body.id },
+        where: { id: context.params.id },
         data: body,
       });
       return NextResponse.json(
@@ -95,16 +98,18 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const body = await request.json();
     const token = await getToken({
       req: request,
       secret: process.env.JWT_SECRET,
     });
     if (token.role == "admin") {
       const department = await prisma.departments.delete({
-        where: { id: body.id },
+        where: { id: context.params.id },
       });
       return NextResponse.json(
         { message: "success", department_id: department.id },

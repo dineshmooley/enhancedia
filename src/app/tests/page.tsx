@@ -85,36 +85,9 @@ const QA = [
 const Tests = () => {
   return (
     <div className="container">
-      <div className="flex flex-col justify-center items-center mt-2">
+      <div className="flex justify-center items-center my-2 flex-col">
         {QA.map((qa) => {
-          return (
-            <Card className="col-4 w-[350px] mt-8" key={qa.qno}>
-              <CardHeader>
-                <CardTitle>Question {qa.qno}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form>
-                  <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="name">{qa.q}</Label>
-                      <Select>
-                        <SelectTrigger id="name">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          <SelectItem value="1">{qa.a}</SelectItem>
-                          <SelectItem value="2">{qa.b}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </form>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline">Reset</Button>
-              </CardFooter>
-            </Card>
-          );
+          return <TestCards qno={qa.qno} qn={qa.q} opta={qa.a} optb={qa.b} />;
         })}
       </div>
       <div className="flex justify-center items-center mt-2">
@@ -123,5 +96,43 @@ const Tests = () => {
     </div>
   );
 };
+
+type testCardProps = {
+  qno: number;
+  qn: string;
+  opta: string;
+  optb: string;
+};
+
+function TestCards({ qno, qn, opta, optb }: testCardProps) {
+  return (
+    <Card className=" col-4 w-[350px] my-4" key={qno}>
+      <CardHeader>
+        <CardTitle>Question {qno}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="name">{qn}</Label>
+              <Select>
+                <SelectTrigger id="name">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="1">{opta}</SelectItem>
+                  <SelectItem value="2">{optb}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button variant="outline">Reset</Button>
+      </CardFooter>
+    </Card>
+  );
+}
 
 export default Tests;
