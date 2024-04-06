@@ -1,76 +1,53 @@
 "use client";
-
-import * as React from "react";
-import { Button } from "../(components)/ui/button";
+import { Payment, columns } from "../(components)/ui/data-table/columns";
+import { DataTable } from "../(components)/ui/data-table/Data-Table";
+import { Card } from "../(components)/ui/card";
+import { data } from "../../lib/utils";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCaption,
-} from "../(components)/ui/table";
-import { Plus } from "lucide-react";
-const data = [
-  {
-    slNo: 1,
-    regNo: 311120205024,
-    name: "Dinesh Kumar",
-    email: "dineshkumar.24it@licet.ac.in",
-  },
-  {
-    slNo: 2,
-    regNo: 311120205014,
-    name: "Ashik S",
-    email: "ashik.24it@licet.ac.in",
-  },
-  {
-    slNo: 3,
-    regNo: 311120205049,
-    name: "Samsson R",
-    email: "samsson.24it@licet.ac.in",
-  },
-  {
-    slNo: 4,
-    regNo: 311120205006,
-    name: "Alwin Jebastine",
-    email: "alwinjebastine.24it@licet.ac.in",
-  },
-];
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "../(components)/ui/dropdown-menu";
+import { Button } from "../(components)/ui/button";
+import { Dialog, DialogTrigger } from "../(components)/ui/dialog";
 
 export default function Students() {
   return (
-    <div className="w-full container">
-      <div className="flex my-16 justify-between">
-        <h1 className="text-5xl">Students</h1>
-        <Button variant="outline" size="icon">
-          <Plus className="h-4 w-4" />
-        </Button>
+    <Dialog>
+      <div className="container mt-5">
+        <Card className=" dark:bg-slate-900 shadow-md">
+          <div className="">
+            <div className="flex p-4 justify-between items-center">
+              <h2 className="text-3xl font-bold tracking-tight me-4 align-middle">
+                Students
+              </h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="font-semibold gap-1">
+                    <span className="sr-only">Open menu</span>
+                    More Options
+                    {/* <MoreVertical className="h-4 w-4" /> */}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem>Bulk Upload</DropdownMenuItem>
+                  </DialogTrigger>
+                  <DropdownMenuSeparator />
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem>Single Upload</DropdownMenuItem>
+                  </DialogTrigger>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </Card>
+        <Card className="mt-5 p-5">
+          <DataTable columns={columns} data={data} />
+        </Card>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Sl. No.</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Register No.</TableHead>
-            <TableHead>Email ID</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        {data.map((entry, i) => {
-          return (
-            <TableBody key={i}>
-              <TableRow>
-                <TableCell className="font-medium">{entry.slNo}</TableCell>
-                <TableCell>{entry.regNo}</TableCell>
-                <TableCell>{entry.name}</TableCell>
-                <TableCell>{entry.email}</TableCell>
-              </TableRow>
-            </TableBody>
-          );
-        })}
-      </Table>
-    </div>
+    </Dialog>
   );
 }

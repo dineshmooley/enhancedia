@@ -3,6 +3,7 @@ export const RouterPath: object = {
   Tests: "/tests",
   Departments: "/departments",
   Students: "/students",
+  staffs: "/staffs",
 };
 
 export const URL: String =
