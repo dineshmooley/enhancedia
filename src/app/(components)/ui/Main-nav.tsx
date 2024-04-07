@@ -37,6 +37,12 @@ export function MainNav({
       >
         Students
       </Link>
+      <Link
+        href={RouterPath.staffs}
+        className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
+      >
+        Staffs
+      </Link>
     </nav>
   );
 }
