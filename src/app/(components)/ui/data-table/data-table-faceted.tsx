@@ -35,8 +35,6 @@ export function DataTableFacetedFilter<TData, TValue>({
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
-  console.log("selectedValues", selectedValues, options, "lol", facets);
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -86,7 +84,6 @@ export function DataTableFacetedFilter<TData, TValue>({
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
-                console.log("isSelected", isSelected, option.value);
                 return (
                   <CommandItem
                     key={option.value}

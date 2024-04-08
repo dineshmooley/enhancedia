@@ -1,9 +1,8 @@
 "use client";
-import { useState } from "react";
 import { Payment, columns } from "../(components)/ui/data-table/columns";
 import { DataTable } from "../(components)/ui/data-table/Data-Table";
 import { Card } from "../(components)/ui/card";
-import { data as utilsData } from "../../lib/utils";
+import { data } from "../../lib/utils";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,47 +11,11 @@ import {
   DropdownMenuSeparator,
 } from "../(components)/ui/dropdown-menu";
 import { Button } from "../(components)/ui/button";
-import { Label } from "../(components)/ui/label";
-import { Input } from "../(components)/ui/input";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogClose,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../(components)/ui/dialog";
+import { Dialog, DialogTrigger } from "../(components)/ui/dialog";
 
-const Staffs = () => {
-  const [DialogDetails, setDialogDetails] = useState<any>(null);
+export default function Staffs() {
   return (
     <Dialog>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{DialogDetails?.title}</DialogTitle>
-          <DialogDescription>{DialogDetails?.description}</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="ghost">
-              Cancel
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button type="submit">{DialogDetails?.work}</Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
       <div className="container mt-5">
         <Card className=" dark:bg-slate-900 shadow-md">
           <div className="">
@@ -65,32 +28,15 @@ const Staffs = () => {
                   <Button variant="outline" className="font-semibold gap-1">
                     <span className="sr-only">Open menu</span>
                     More Options
+                    {/* <MoreVertical className="h-4 w-4" /> */}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DialogTrigger
-                    onClick={() => {
-                      setDialogDetails({
-                        title: "Add Staff",
-                        description: "Upload the .csv File",
-                        work: "Bulk add",
-                      });
-                    }}
-                    asChild
-                  >
+                  <DialogTrigger asChild>
                     <DropdownMenuItem>Bulk Upload</DropdownMenuItem>
                   </DialogTrigger>
                   <DropdownMenuSeparator />
-                  <DialogTrigger
-                    onClick={() => {
-                      setDialogDetails({
-                        title: "Add Staff",
-                        description: "Enter the details",
-                        work: "add",
-                      });
-                    }}
-                    asChild
-                  >
+                  <DialogTrigger asChild>
                     <DropdownMenuItem>Single Upload</DropdownMenuItem>
                   </DialogTrigger>
                 </DropdownMenuContent>
@@ -99,11 +45,9 @@ const Staffs = () => {
           </div>
         </Card>
         <Card className="mt-5 p-5">
-          <DataTable columns={columns} data={utilsData} />
+          <DataTable columns={columns} data={data} />
         </Card>
       </div>
     </Dialog>
   );
-};
-
-export default Staffs;
+}

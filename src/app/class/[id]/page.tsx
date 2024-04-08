@@ -140,7 +140,7 @@ export default function Departments({ params }: { params: { id: string } }) {
             </div>
           </Card>
           <Card className="mt-5 p-5">
-            <DataTable columns={columns} data={utilsData} />
+            <DataTable columns={columns} data={Classdata.students} />
           </Card>
         </div>
       </Dialog>
