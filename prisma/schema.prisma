@@ -11,6 +11,7 @@ datasource db {
 
 model staff {
     id           String       @id @default(auto()) @map("_id") @db.ObjectId
+    roll_no      String       @unique
     email        String       @unique
     password     String
     name         String

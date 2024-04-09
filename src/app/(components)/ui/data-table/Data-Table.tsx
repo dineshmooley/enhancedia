@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
+import { DataTableViewOptions } from "./data-table-view-options";
 import {
   Table,
   TableBody,
@@ -25,13 +25,26 @@ import {
 import { Button } from "../button";
 import { Input } from "../input";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../dropdown-menu";
-import { DataTableToolbar } from "./data-table-toolbar";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
+} from "../select";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import {
+  getDepartments,
+  getDepartmentById,
+} from "../../../../lib/services/departments/service";
+import { getClass } from "../../../../lib/services/class/service";
+import {
+  getStaffs,
+  getDepartmentStaffs,
+} from "../../../../lib/services/users/service";
 
+import { usePathname } from "next/navigation";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -41,6 +54,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const pathname = usePathname();
+  const [departments, setDepartments] = React.useState([]);
+  const [classList, setClassList] = React.useState([]);
+  const [classData, setClassData] = React.useState([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -48,6 +65,52 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const fetchDepartments = async () => {
+    try {
+      setDepartments(await getDepartments());
+    } catch (error) {
+      setDepartments([]);
+    }
+  };
+
+  const fetchDepartment = async (id: string) => {
+    try {
+      const department = await getDepartmentById(id);
+      setClassList(department.classes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchClass = async (id: string) => {
+    try {
+      const data = await getClass(id);
+      setClassData(data.students);
+    } catch (Error) {
+      console.log(Error);
+    }
+  };
+
+  const fetchStaffs = async () => {
+    try {
+      const data = await getStaffs();
+      setClassData(data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const FetchDeptStaffs = async (id: string) => {
+    try {
+      const data = await getDepartmentStaffs(id);
+      setClassData(data.message);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  data = data ? data : classData;
   const table = useReactTable({
     data,
     columns,
@@ -66,10 +129,114 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+  const isFiltered = table.getState().columnFilters.length > 0;
+
+  React.useEffect(() => {
+    if (pathname == "/staffs") fetchStaffs();
+    fetchDepartments();
+  }, []);
+
+  React.useEffect(() => {}, [classData]);
+
+  if (!departments) return <div>Loading...</div>;
 
   return (
     <div>
-      <DataTableToolbar table={table} />
+      <div className="my-2 flex items-center justify-between">
+        <div className="flex flex-1 items-center space-x-2">
+          <Input
+            placeholder="Filter Email"
+            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("email")?.setFilterValue(event.target.value)
+            }
+            className="h-8 w-[150px] lg:w-[250px]"
+          />
+          {pathname == "/students" ? (
+            <>
+              <Select
+                onValueChange={(value) => {
+                  fetchDepartment(value);
+                  setClassData([]);
+                }}
+              >
+                <SelectTrigger className="w-[275px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Select Department</SelectLabel>
+                    {departments &&
+                      departments?.map((department: any) => (
+                        <SelectItem key={department.id} value={department.id}>
+                          {department.name}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {classList.length > 0 && (
+                <Select
+                  onValueChange={(value) => {
+                    fetchClass(value);
+                  }}
+                >
+                  <SelectTrigger className="w-[275px]">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select Class</SelectLabel>
+                      {classList &&
+                        classList?.map((classItem: any) => (
+                          <SelectItem key={classItem.id} value={classItem.id}>
+                            {classItem.batch} {classItem.section}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            </>
+          ) : null}
+          {pathname == "/staffs" ? (
+            <>
+              <Select
+                onValueChange={(value) => {
+                  value == "admin" ? fetchStaffs() : FetchDeptStaffs(value);
+                }}
+              >
+                <SelectTrigger className="w-[275px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Select Department</SelectLabel>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    {departments &&
+                      departments?.map((department: any) => (
+                        <SelectItem key={department.id} value={department.id}>
+                          {department.name}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </>
+          ) : null}
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reset
+              <Cross2Icon className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        <DataTableViewOptions table={table} />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

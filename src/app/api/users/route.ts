@@ -12,7 +12,19 @@ export async function GET(request: NextRequest) {
     });
     if (token.role == "admin") {
       if (url == "staffs") {
-        const users = await prisma.staff.findMany();
+        if (request.nextUrl.searchParams.get("departmentId")) {
+          const users = await prisma.staff.findMany({
+            where: {
+              departmentId: request.nextUrl.searchParams.get("departmentId"),
+            },
+          });
+          return NextResponse.json({ message: users }, { status: 200 });
+        }
+        const users = await prisma.staff.findMany({
+          where: {
+            departmentId: null,
+          },
+        });
         return NextResponse.json({ message: users }, { status: 200 });
       } else if (url == "students") {
         const users = await prisma.student.findMany({
@@ -33,6 +45,9 @@ export async function GET(request: NextRequest) {
             class: {
               archived: false,
             },
+          },
+          orderBy: {
+            register_number: "asc",
           },
         });
         return NextResponse.json({ message: users }, { status: 200 });

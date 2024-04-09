@@ -40,6 +40,7 @@ import {
   SelectItem,
   SelectLabel,
 } from "../(components)/ui/select";
+import { DownloadIcon } from "@radix-ui/react-icons";
 
 const Students = () => {
   const [DialogDetails, setDialogDetails] = useState<any>(null);
@@ -48,18 +49,6 @@ const Students = () => {
   const [classes, setClasses] = useState<any>(null);
   const [selectData, setSelectData] = useState<any>(null);
   const [students, setStudents] = useState<any>(null);
-
-  const getStudentList = async () => {
-    try {
-      const res = await getStudents();
-      if (res !== undefined && res !== null) {
-        setStudents(res);
-        console.log("The students are ", res);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const getDepartmentList = async () => {
     try {
@@ -97,11 +86,8 @@ const Students = () => {
   };
 
   useEffect(() => {
-    getStudentList();
     getDepartmentList();
   }, []);
-
-  if (!students) return <div>Loading...</div>;
 
   return (
     <Dialog>
@@ -117,25 +103,97 @@ const Students = () => {
                 <Label htmlFor="name" className="text-right">
                   Register Number
                 </Label>
-                <Input className="col-span-3" />
+                <Input
+                  className="col-span-3"
+                  onChange={(e) => {
+                    data[0].register_number = e.target.value;
+                  }}
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input className="col-span-3" />
+                <Input
+                  className="col-span-3"
+                  onChange={(e) => {
+                    data[0].name = e.target.value;
+                  }}
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Email
                 </Label>
-                <Input className="col-span-3" />
+                <Input
+                  className="col-span-3"
+                  type="email"
+                  onChange={(e) => {
+                    data[0].email = e.target.value;
+                  }}
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Password
                 </Label>
-                <Input className="col-span-3" />
+                <Input
+                  className="col-span-3"
+                  type="password"
+                  onChange={(e) => {
+                    data[0].password = e.target.value;
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Department
+                </Label>
+                <Select
+                  onValueChange={(value) => {
+                    setSelectData({ departmentId: value });
+                    getClasses(value);
+                  }}
+                >
+                  <SelectTrigger className="w-[275px]">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select Department</SelectLabel>
+                      {departments &&
+                        departments?.map((department: any) => (
+                          <SelectItem key={department.id} value={department.id}>
+                            {department.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Class
+                </Label>
+                <Select
+                  onValueChange={(e) => {
+                    data[0].classId = e;
+                  }}
+                >
+                  <SelectTrigger className="w-[275px]">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select Class</SelectLabel>
+                      {classes?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.batch}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </>
           ) : (
@@ -193,7 +251,7 @@ const Students = () => {
               {selectData?.ClassId && (
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
-                    Name
+                    File
                   </Label>
                   <Input
                     className="col-span-3"
@@ -221,6 +279,17 @@ const Students = () => {
                   />
                 </div>
               )}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Sample CSV
+                </Label>
+                <a className="text-sm" href="/template/student_db.csv" download>
+                  <Button size="sm" variant="outline" className="">
+                    <DownloadIcon className="mx-2 my-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </a>
+              </div>
             </>
           )}
         </div>
@@ -260,7 +329,7 @@ const Students = () => {
                   <DialogTrigger
                     onClick={() => {
                       setDialogDetails({
-                        title: "Add Staff",
+                        title: "Add Students",
                         description: "Upload the .csv File",
                         work: "Bulk add",
                       });
@@ -274,10 +343,20 @@ const Students = () => {
                   <DialogTrigger
                     onClick={() => {
                       setDialogDetails({
-                        title: "Add Staff",
+                        title: "Add Student",
                         description: "Enter the details",
                         work: "add",
                       });
+                      setData([
+                        {
+                          register_number: "",
+                          email: "",
+                          name: "",
+                          password: "",
+                          role: "student",
+                          classId: "",
+                        },
+                      ]);
                     }}
                     asChild
                   >
@@ -289,7 +368,7 @@ const Students = () => {
           </div>
         </Card>
         <Card className="mt-5 p-5">
-          <DataTable columns={columns} data={students.message} />
+          <DataTable columns={columns} data={null} />
         </Card>
       </div>
     </Dialog>

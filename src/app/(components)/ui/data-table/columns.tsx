@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "../checkbox";
+import { usePathname } from "next/navigation";
 
 import { Button } from "../button";
 import {
@@ -51,6 +52,14 @@ export const columns: ColumnDef<Payment>[] = [
       return value.includes(row.getValue(id));
     },
     cell: ({ row }) => <div>{row.getValue("register_number")}</div>,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
@@ -111,4 +120,57 @@ export const columns: ColumnDef<Payment>[] = [
   //     );
   //   },
   // },
+];
+export const columns2: ColumnDef<Payment>[] = [
+  {
+    id: "select",
+    accessorKey: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "roll_no",
+    header: "Staff Id",
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    cell: ({ row }) => <div>{row.getValue("roll_no")}</div>,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+  },
 ];

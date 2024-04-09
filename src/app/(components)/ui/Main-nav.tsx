@@ -10,38 +10,38 @@ export function MainNav({
 }: React.HTMLAttributes<HTMLElement>) {
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+      className={cn("flex items-center space-x-2 lg:space-x-6", className)}
       {...props}
     >
       <Link
         href={RouterPath.Home}
         className="text-md font-medium transition-colors hover:text-primary"
       >
-        Home
+        <Button variant="ghost">Home</Button>
       </Link>
       <Link
         href={RouterPath.Tests}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
-        Test
+        <Button variant="ghost">Tests</Button>
       </Link>
       <Link
         href={RouterPath.Departments}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
-        Departments
+        <Button variant="ghost">Departments</Button>
       </Link>
       <Link
         href={RouterPath.Students}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
-        Students
+        <Button variant="ghost">Students</Button>
       </Link>
       <Link
         href={RouterPath.staffs}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
-        Staffs
+        <Button variant="ghost">Staffs</Button>
       </Link>
     </nav>
   );
