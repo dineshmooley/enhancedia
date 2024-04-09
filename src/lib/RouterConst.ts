@@ -1,8 +1,10 @@
-export const RouterPath: object = {
+export const RouterPath: any = {
   Home: "/",
   Tests: "/tests",
   Departments: "/departments",
   Students: "/students",
+  staffs: "/staffs",
+  login: "/login",
 };
 
 export const URL: String =

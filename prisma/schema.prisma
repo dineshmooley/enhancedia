@@ -1,81 +1,84 @@
 // This is your Prisma schema file,
 
-generator client{
+generator client {
     provider = "prisma-client-js"
 }
-datasource db{
+
+datasource db {
     provider = "mongodb"
     url      = env("DATABASE_URL")
 }
 
-model staff{
-      id  String  @id @default(auto()) @map("_id") @db.ObjectId
-      email String @unique
-      password String
-      name String
-      role String
-      departmentId String? @db.ObjectId
-        department departments? @relation(fields: [departmentId], references: [id])
-    }
-
-model student{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    email String @unique
-    name String
-    password String
-    role String
-    classId String? @db.ObjectId
-    class classes? @relation(fields: [classId],references: [id])
+model staff {
+    id           String       @id @default(auto()) @map("_id") @db.ObjectId
+    roll_no      String       @unique
+    email        String       @unique
+    password     String
+    name         String
+    role         String
+    departmentId String?      @db.ObjectId
+    department   departments? @relation(fields: [departmentId], references: [id])
 }
 
-model departments{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    name String @unique
+model student {
+    id              String   @id @default(auto()) @map("_id") @db.ObjectId
+    register_number String   @unique
+    email           String   @unique
+    name            String
+    password        String
+    role            String
+    classId         String   @db.ObjectId
+    class           classes? @relation(fields: [classId], references: [id])
+}
+
+model departments {
+    id      String    @id @default(auto()) @map("_id") @db.ObjectId
+    name    String    @unique
     classes classes[]
-    staffs staff[]
+    staffs  staff[]
 }
 
-model classes{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    regulation Int
-    batch Int
-    section String?
-    archived Boolean @default(false)
-    departmentId String @db.ObjectId
-    department departments @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-    students student[]
-    tests test[]
+model classes {
+    id           String      @id @default(auto()) @map("_id") @db.ObjectId
+    regulation   Int
+    batch        Int
+    section      String?
+    archived     Boolean     @default(false)
+    departmentId String      @db.ObjectId
+    department   departments @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+    students     student[]
+    tests        test[]
 }
 
-model test{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    name String
+model test {
+    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
     description String
-    created_at DateTime
-    start_time DateTime
-    end_time DateTime
-    score Int?
-    Total Int
-    classId String @db.ObjectId
-    class classes @relation(fields: [classId], references: [id])
-    questions questions[]
+    created_at  DateTime
+    start_time  DateTime
+    end_time    DateTime
+    score       Int?
+    Total       Int
+    classId     String      @db.ObjectId
+    class       classes     @relation(fields: [classId], references: [id])
+    questions   questions[]
 }
 
-model questions{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+model questions {
+    id       String    @id @default(auto()) @map("_id") @db.ObjectId
     question String
-    marks Int
-    topic String
-    choice String[]
-    testId String? @db.ObjectId
-    test test? @relation(fields: [testId], references: [id])
-    choices choices[]
+    marks    Int
+    topic    String
+    choice   String[]
+    testId   String?   @db.ObjectId
+    test     test?     @relation(fields: [testId], references: [id])
+    choices  choices[]
 }
 
-model choices{
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    correct Boolean
-    option String
-    questionId String @db.ObjectId
-    question questions @relation(fields: [questionId], references: [id])
+model choices {
+    id         String    @id @default(auto()) @map("_id") @db.ObjectId
+    correct    Boolean
+    option     String
+    questionId String    @db.ObjectId
+    question   questions @relation(fields: [questionId], references: [id])
 }

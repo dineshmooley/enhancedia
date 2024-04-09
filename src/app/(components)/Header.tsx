@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { MainNav } from "./ui/Main-nav";
 import { ModeToggle } from "./ui/mode-toggle";
-import { useSession } from "next-auth/react";
-import { Button } from "./ui/button";
 import { UserDrop } from "./ui/user-drop";
+import { usePathname } from "next/navigation";
+import { RouterPath } from "../../lib/RouterConst";
 
 const Header = () => {
-  const { data: session } = useSession();
-  if (session) {
+  const pathname = usePathname();
+  if (pathname != RouterPath.login) {
     return (
       <>
         <div className="hidden flex-col md:flex">
