@@ -15,13 +15,13 @@ const Header = () => {
         <div className="hidden flex-col md:flex">
           <div className="border-b">
             <div className="flex p-4 justify-between">
-              <Link href="/" className="mt-2">
-                LICET
+              <Link href="/" className="mt-2 font-serif tracking-wide">
+                LICET Enhancedia
               </Link>
               <MainNav className="mx-6" />
               <div className="flex items-center">
                 <ModeToggle />
-                <UserDrop className = "ml-4"/>
+                <UserDrop className="ml-4" />
               </div>
             </div>
           </div>
