@@ -1,17 +1,5 @@
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-  CrumpledPaperIcon,
-  RocketIcon,
-  GearIcon,
-} from "@radix-ui/react-icons";
-import { getTopics } from "../../../../lib/services/tests/service";
+import { CrumpledPaperIcon, RocketIcon, GearIcon } from "@radix-ui/react-icons";
+import { getTopics } from "../../../../lib/services/questions/service";
 
 export const statuses = [
   {

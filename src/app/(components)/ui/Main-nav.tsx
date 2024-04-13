@@ -20,10 +20,10 @@ export function MainNav({
         <Button variant="ghost">Home</Button>
       </Link>
       <Link
-        href={RouterPath.Tests}
+        href={RouterPath.Questions}
         className="text-md font-medium text-muted-foreground transition-colors hover:text-primary"
       >
-        <Button variant="ghost">Tests</Button>
+        <Button variant="ghost">QA</Button>
       </Link>
       <Link
         href={RouterPath.Departments}
