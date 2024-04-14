@@ -15,7 +15,10 @@ const Header = () => {
         <div className="hidden flex-col md:flex">
           <div className="border-b">
             <div className="flex p-4 justify-between">
-              <Link href="/" className="mt-2 font-serif tracking-wide">
+              <Link
+                href="/"
+                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mt-2 text-2xl font-extrabold tracking-wide"
+              >
                 LICET Enhancedia
               </Link>
               <MainNav className="mx-6" />
