@@ -11,9 +11,12 @@ export async function GET(
       secret: process.env.JWT_SECRET,
     });
     if (token.role == "admin") {
-      const classes = await prisma.classes.findUnique({
+      const classes = await prisma.classes.findUniqueOrThrow({
         where: { id: context.params.id },
-        include: { students: true, department: true },
+        include: {
+          students: true,
+          department: true,
+        },
       });
       return NextResponse.json(
         { message: "success", data: classes },

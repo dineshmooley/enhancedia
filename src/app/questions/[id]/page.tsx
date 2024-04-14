@@ -21,6 +21,7 @@ import {
 } from "../../(components)/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import MDEditor from "@uiw/react-md-editor";
 
 const QuestionsID = ({ params }: { params: { id: string } }) => {
   const [question, setQuestion] = useState(null);
@@ -92,6 +93,18 @@ const QuestionsID = ({ params }: { params: { id: string } }) => {
               </Label>
               {question.question}
             </div>
+            {question.code && (
+              <div className="flex items-start gap-4">
+                <Label htmlFor="name" className="font-semibold text-md">
+                  Code:
+                </Label>
+                <MDEditor.Markdown
+                  className="bg-slate-800 p-2 rounded-md w-full overflow-x-auto"
+                  source={question.code}
+                  style={{ whiteSpace: "pre-wrap" }}
+                />
+              </div>
+            )}
             <div className="flex items-start gap-4">
               <Label htmlFor="name" className="font-semibold text-md">
                 Type:
