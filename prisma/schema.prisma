@@ -65,22 +65,14 @@ model test {
 }
 
 model questions {
-    id       String    @id @default(auto()) @map("_id") @db.ObjectId
+    id       String   @id @default(auto()) @map("_id") @db.ObjectId
     question String
     marks    Int?
     topic    String?
     type     String
+    answer   String?
     code     String?
     choice   String[]
-    testId   String?   @db.ObjectId
-    test     test?     @relation(fields: [testId], references: [id])
-    choices  choices[]
-}
-
-model choices {
-    id         String    @id @default(auto()) @map("_id") @db.ObjectId
-    correct    Boolean?
-    option     String
-    questionId String    @db.ObjectId
-    question   questions @relation(fields: [questionId], references: [id])
+    testId   String?  @db.ObjectId
+    test     test?    @relation(fields: [testId], references: [id])
 }

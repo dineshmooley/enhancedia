@@ -11,6 +11,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../../(components)/ui/dropdown-menu";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../(components)/ui/tabs";
 import { Button } from "../../(components)/ui/button";
 import { Dialog, DialogTrigger } from "../../(components)/ui/dialog";
 import { Separator } from "../../(components)/ui/separator";
@@ -57,7 +63,6 @@ export default function Departments({ params }: { params: { id: string } }) {
                     <Button variant="outline" className="font-semibold gap-1">
                       <span className="sr-only">Open menu</span>
                       More Options
-                      {/* <MoreVertical className="h-4 w-4" /> */}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -130,18 +135,23 @@ export default function Departments({ params }: { params: { id: string } }) {
                   <h5 className="text-xs text-muted-foreground">Section</h5>
                   <span className="font-semibold">{Classdata?.section}</span>
                 </div>
-                {/* <div className="flex flex-col gap-1 my-2 px-2">
-                  <h5 className="text-xs text-muted-foreground">
-                    Class Advisors
-                  </h5>
-                  <span className="">234</span>
-                </div> */}
               </div>
             </div>
           </Card>
-          <Card className="mt-5 p-5">
-            <DataTable columns={columns} data={Classdata.students} />
-          </Card>
+          <Tabs defaultValue="student" className="mt-5">
+            <TabsList className="grid w-1/4 grid-cols-2">
+              <TabsTrigger value="student">Student</TabsTrigger>
+              <TabsTrigger value="test">Test</TabsTrigger>
+            </TabsList>
+            <TabsContent value="student">
+              <Card className="p-5">
+                <DataTable columns={columns} data={Classdata.students} />
+              </Card>
+            </TabsContent>
+            <TabsContent value="test">
+              <Card className="p-5">Test</Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </Dialog>
     </>

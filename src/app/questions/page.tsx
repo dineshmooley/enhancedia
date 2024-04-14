@@ -23,7 +23,7 @@ import {
 import { Button } from "../(components)/ui/button";
 import { DataTable } from "../(components)/ui/question-table/Data-table";
 import { columns } from "../(components)/ui/question-table/columns";
-import { getQuestions } from "../../lib/services/tests/service";
+import { getQuestions } from "../../lib/services/questions/service";
 import {
   Dialog,
   DialogTrigger,
@@ -33,20 +33,20 @@ import {
   DialogDescription,
   DialogFooter,
 } from "../(components)/ui/dialog";
-import { getTopics } from "../../lib/services/tests/service";
-import { Switch } from "../(components)/ui/switch";
+import { CreateQuestion } from "../../lib/services/questions/service";
 import { Textarea } from "../(components)/ui/textarea";
 import { Input } from "../(components)/ui/input";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { ScrollArea } from "../(components)/ui/scrollarea";
 import { RadioGroup, RadioGroupItem } from "../(components)/ui/radio-group";
+import { toast } from "sonner";
 
-const Tests = () => {
+const Questions = () => {
+  const [open, setOpen] = React.useState(false);
+  const [data, setData] = React.useState(null);
   const [questions, setQuestions] = React.useState([]);
-  const [topics, setTopics] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [code, setCode] = React.useState(false);
-  const [value, setValue] = React.useState("**Hello world!!!**");
 
   const fetchQuestions = async () => {
     try {
@@ -58,14 +58,29 @@ const Tests = () => {
     }
   };
 
-  const Topic = async () => {
+  // const Topic = async () => {
+  //   try {
+  //     const res = await getTopics();
+  //     if (res) {
+  //       setTopics(res.topics);
+  //     }
+  //   } catch {
+  //     return [];
+  //   }
+  // };
+
+  const AddQuestion = async (data: any) => {
     try {
-      const res = await getTopics();
-      if (res) {
-        setTopics(res.topics);
+      const res = await CreateQuestion(data);
+      if (res.message == "Success") {
+        setOpen(false);
+        toast.success("Question added successfully");
+        fetchQuestions();
+      } else {
+        toast.error("Question not added");
       }
-    } catch {
-      return [];
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -74,14 +89,20 @@ const Tests = () => {
   }, []);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <div className="container mt-5">
         <Card className=" dark:bg-slate-900 shadow-md">
           <div className="flex p-4 justify-between items-center">
             <h2 className="text-3xl font-bold tracking-tight me-4 align-middle">
               Question Base
             </h2>
-            <DialogTrigger asChild>
+            <DialogTrigger
+              asChild
+              onClick={() => {
+                setData(null);
+                setData({ ...data, question: "" });
+              }}
+            >
               <Button variant="outline" className="font-semibold">
                 Add Questions
               </Button>
@@ -103,6 +124,22 @@ const Tests = () => {
                       id="name"
                       className="col-span-2"
                       placeholder="Enter question"
+                      value={data?.question}
+                      onChange={(e) => {
+                        setData({ ...data, question: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 items-center gap-4">
+                    <Label htmlFor="name" className="font-semibold text-md">
+                      Mark (optional)
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="2"
+                      onChange={(e) => {
+                        setData({ ...data, marks: parseInt(e.target.value) });
+                      }}
                     />
                   </div>
                   <div className="grid grid-cols-1 items-center gap-4">
@@ -112,7 +149,9 @@ const Tests = () => {
                       onValueChange={(e) => {
                         if (e == "code") {
                           setCode(true);
+                          setData({ ...data, code: null });
                         } else {
+                          setData({ ...data, code: null });
                           setCode(false);
                         }
                       }}
@@ -132,14 +171,24 @@ const Tests = () => {
                       <Label htmlFor="name" className="font-semibold text-md">
                         Insert
                       </Label>
-                      <MDEditor value={value} onChange={setValue} />
+                      <MDEditor
+                        value={data?.code}
+                        onChange={(value) => {
+                          setData({ ...data, code: value });
+                        }}
+                      />
                     </div>
                   )}
                   <div className="grid grid-cols-1 items-center gap-4">
                     <Label htmlFor="name" className="font-semibold text-md">
                       Type
                     </Label>
-                    <Select>
+                    <Select
+                      required
+                      onValueChange={(value) => {
+                        setData({ ...data, type: value });
+                      }}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
@@ -159,7 +208,14 @@ const Tests = () => {
                     <Label htmlFor="name" className="font-semibold text-md">
                       Topic
                     </Label>
-                    <Input id="name" placeholder="Enter topic" />
+                    <Input
+                      id="name"
+                      autoCapitalize="none"
+                      placeholder="Enter topic"
+                      onChange={(e) => {
+                        setData({ ...data, topic: e.target.value });
+                      }}
+                    />
                   </div>
                   <div className="grid grid-cols-1 items-center gap-4">
                     <Label htmlFor="name" className="font-semibold text-md">
@@ -168,6 +224,9 @@ const Tests = () => {
                         variant="outline"
                         className="ms-3 rounded-full"
                         onClick={() => {
+                          if (count == 0) {
+                            setData({ ...data, choice: [] });
+                          }
                           setCount(count + 1);
                         }}
                       >
@@ -176,7 +235,10 @@ const Tests = () => {
                     </Label>
                     <div className="grid grid-cols-2 gap-4">
                       {[...Array(count)].map((_, i) => (
-                        <div className="grid grid-cols-1 items-center gap-4">
+                        <div
+                          className="grid grid-cols-1 items-center gap-4"
+                          key={i}
+                        >
                           <Label
                             htmlFor="name"
                             className="font-semibold text-md"
@@ -186,6 +248,10 @@ const Tests = () => {
                               variant="ghost"
                               className="ms-2 rounded-full"
                               onClick={() => {
+                                if (data.choice[i] == data.answer) {
+                                  delete data.answer;
+                                }
+                                data.choice.splice(i, 1);
                                 setCount(count - 1);
                               }}
                             >
@@ -196,13 +262,39 @@ const Tests = () => {
                             id="name"
                             className="col-span-3"
                             placeholder="Enter option"
+                            onChange={(e) => {
+                              const updatedChoice = [...data.choice];
+                              updatedChoice[i] = e.target.value;
+                              setData({
+                                ...data,
+                                choice: updatedChoice,
+                              });
+                            }}
                           />
                           <Label
                             htmlFor="name"
                             className="font-semibold text-md flex items-center space-x-2"
                           >
                             <span>correct (optional)</span>
-                            <Switch id="correct" />
+                            <RadioGroup
+                              defaultValue="no"
+                              className="flex flex-row"
+                              onValueChange={(e) => {
+                                setData({
+                                  ...data,
+                                  answer: e == "true" ? data?.choice[i] : null,
+                                });
+                              }}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="false" id="r1" />
+                                <Label htmlFor="r1">No</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="true" id="r2" />
+                                <Label htmlFor="r2">Yes</Label>
+                              </div>
+                            </RadioGroup>
                           </Label>
                         </div>
                       ))}
@@ -210,9 +302,15 @@ const Tests = () => {
                   </div>
                 </div>
               </ScrollArea>
-
               <DialogFooter>
-                <Button type="submit">Add</Button>
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    AddQuestion(data);
+                  }}
+                >
+                  Add
+                </Button>
               </DialogFooter>
             </DialogContent>
           </div>
@@ -263,4 +361,4 @@ function TestCards({ qno, qn, opta, optb }: testCardProps) {
   );
 }
 
-export default Tests;
+export default Questions;

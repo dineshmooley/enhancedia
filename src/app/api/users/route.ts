@@ -41,13 +41,13 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          orderBy: {
+            register_number: "asc",
+          },
           where: {
             class: {
               archived: false,
             },
-          },
-          orderBy: {
-            register_number: "asc",
           },
         });
         return NextResponse.json({ message: users }, { status: 200 });

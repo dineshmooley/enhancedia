@@ -1,6 +1,7 @@
 export const RouterPath: any = {
   Home: "/",
   Tests: "/tests",
+  Questions: "/questions",
   Departments: "/departments",
   Students: "/students",
   staffs: "/staffs",

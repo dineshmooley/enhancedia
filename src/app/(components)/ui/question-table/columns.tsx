@@ -1,28 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Checkbox } from "../checkbox";
-import { usePathname } from "next/navigation";
-
 import { Button } from "../button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../dropdown-menu";
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
+import Link from "next/link";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -69,27 +51,20 @@ export const columns: ColumnDef<any>[] = [
     },
     cell: ({ row }) => <div>{row.getValue("topic")}</div>,
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   cell: () => {
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal className="h-4 w-4" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem>Copy payment ID</DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View customer</DropdownMenuItem>
-  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: "id",
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <>
+          <Link href={`/questions/${row.getValue("id")}`}>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Action</span>
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          </Link>
+        </>
+      );
+    },
+  },
 ];
