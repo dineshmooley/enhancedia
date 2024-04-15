@@ -73,6 +73,6 @@ model questions {
     answer   String?
     code     String?
     choice   String[]
-    testId   String   @db.ObjectId
-    test     test     @relation(fields: [testId], references: [id])
+    testId   String?   @db.ObjectId
+    test     test?     @relation(fields: [testId], references: [id])
 }
