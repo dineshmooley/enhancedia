@@ -3,6 +3,17 @@ import { useTheme } from "next-themes";
 import { Button } from "./button";
 import { signOut } from "next-auth/react";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,12 +35,33 @@ export function UserDrop(props) {
           <DropdownMenuLabel className="w-65">My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href='/profile/1'>Profile</Link>
+            <Link href="/profile/1">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+          <AlertDialog>
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <AlertDialogTrigger asChild>
+                <span>Log Out</span>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. You will be logged out of you
+                    account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => signOut()}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </DropdownMenuItem>
+          </AlertDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
