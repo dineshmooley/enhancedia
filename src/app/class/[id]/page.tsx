@@ -34,6 +34,7 @@ import { getClass } from "../../../lib/services/class/service";
 import { PlusIcon } from "lucide-react";
 import { CreateTestService } from "../../../lib/services/tests/service";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function Departments({ params }: { params: { id: string } }) {
   const [dialogDetails, setDialogDetails] = useState({
@@ -273,19 +274,36 @@ export default function Departments({ params }: { params: { id: string } }) {
                 </Dialog>
                 {Classdata?.tests.length > 0
                   ? Classdata?.tests.map((test: any) => (
-                      <div
+                      <Card
                         key={test.id}
-                        className="flex justify-between items-center p-2 my-2 bg-gray-100 dark:bg-slate-800 rounded-md"
+                        className="flex justify-between items-center p-2 my-2 bg-gray-100 dark:bg-slate-800 rounded-md w-92"
                       >
                         <div>
-                          <h3 className="font-semibold">{test.title}</h3>
-                          <p>{test.description}</p>
+                          <Link
+                            href={`/test/${test.id}`}
+                            className="font-semibold space-x-2"
+                          >
+                            {test.name}
+                          </Link>
+                          <p>Description: {test.description}</p>
                         </div>
                         <div>
-                          <h3>{test.start_time}</h3>
-                          <h3>{test.end_time}</h3>
+                          <h3>
+                            Start: {test.start_time.substring(0, 10)}{" "}
+                            {new Date(test.start_time).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h3>
+                          <h3>
+                            End: {test.end_time.substring(0, 10)}{" "}
+                            {new Date(test.end_time).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </h3>
                         </div>
-                      </div>
+                      </Card>
                     ))
                   : null}
               </Card>
