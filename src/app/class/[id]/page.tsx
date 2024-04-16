@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Payment, columns } from "../../(components)/ui/data-table/columns";
+import { columns } from "../../(components)/ui/data-table/columns";
 import { DataTable } from "../../(components)/ui/data-table/Data-Table";
 import { Card } from "../../(components)/ui/card";
-import { data as utilsData } from "../../../lib/utils";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,10 +16,24 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../(components)/ui/tabs";
+import { Label } from "../../(components)/ui/label";
+import { Input } from "../../(components)/ui/input";
 import { Button } from "../../(components)/ui/button";
-import { Dialog, DialogTrigger } from "../../(components)/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "../../(components)/ui/dialog";
 import { Separator } from "../../(components)/ui/separator";
 import { getClass } from "../../../lib/services/class/service";
+import { PlusIcon } from "lucide-react";
+import { CreateTestService } from "../../../lib/services/tests/service";
+import { toast } from "sonner";
 
 export default function Departments({ params }: { params: { id: string } }) {
   const [dialogDetails, setDialogDetails] = useState({
@@ -30,6 +43,8 @@ export default function Departments({ params }: { params: { id: string } }) {
   });
   const id = params.id;
   const [Classdata, setClassData] = useState(null);
+  const [data, setData] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const GetClass = async () => {
     try {
@@ -42,6 +57,20 @@ export default function Departments({ params }: { params: { id: string } }) {
       console.log(err);
     }
   };
+
+  const CreateTest = async (data: any) => {
+    try {
+      const res = await CreateTestService(data);
+      if (res.message === "success") {
+        setOpen(false);
+        toast.success("Test Created Successfully");
+        GetClass();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     GetClass();
   }, []);
@@ -149,7 +178,117 @@ export default function Departments({ params }: { params: { id: string } }) {
               </Card>
             </TabsContent>
             <TabsContent value="test">
-              <Card className="p-5">Test</Card>
+              <Card className="p-5">
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setData(null);
+                        setData({ classId: id });
+                      }}
+                    >
+                      <PlusIcon />
+                      Add Test
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create Test</DialogTitle>
+                      <DialogDescription>Enter Details</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Title
+                        </Label>
+                        <Input
+                          onChange={(e) => {
+                            setData({ ...data, name: e.target.value });
+                          }}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Description
+                        </Label>
+                        <Input
+                          onChange={(e) => {
+                            setData({ ...data, description: e.target.value });
+                          }}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Start Time
+                        </Label>
+                        <Input
+                          onChange={(e) => {
+                            const val = new Date(e.target.value).toISOString();
+                            setData({ ...data, start_time: val });
+                          }}
+                          className="col-span-3"
+                          type="datetime-local"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          End Time
+                        </Label>
+                        <Input
+                          onChange={(e) => {
+                            const val = new Date(e.target.value).toISOString();
+                            setData({ ...data, end_time: val });
+                          }}
+                          className="col-span-3"
+                          type="datetime-local"
+                        />
+                      </div>
+                      <div className="grid mt-3 items-center gap-4">
+                        <Label htmlFor="name" className="font-semibold">
+                          Note: Add Questions after Creation
+                        </Label>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button type="button" variant="ghost">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button
+                          type="submit"
+                          onClick={() => {
+                            CreateTest(data);
+                          }}
+                        >
+                          Create
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+                {Classdata?.tests.length > 0
+                  ? Classdata?.tests.map((test: any) => (
+                      <div
+                        key={test.id}
+                        className="flex justify-between items-center p-2 my-2 bg-gray-100 dark:bg-slate-800 rounded-md"
+                      >
+                        <div>
+                          <h3 className="font-semibold">{test.title}</h3>
+                          <p>{test.description}</p>
+                        </div>
+                        <div>
+                          <h3>{test.start_time}</h3>
+                          <h3>{test.end_time}</h3>
+                        </div>
+                      </div>
+                    ))
+                  : null}
+              </Card>
             </TabsContent>
           </Tabs>
         </div>

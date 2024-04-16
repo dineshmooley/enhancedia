@@ -16,6 +16,7 @@ export async function GET(
         include: {
           students: true,
           department: true,
+          tests: true,
         },
       });
       return NextResponse.json(
