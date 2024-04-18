@@ -14,8 +14,15 @@ export async function GET(
       const test = await prisma.test.findUnique({
         where: { id: context.params.id },
       });
+      const questions = await prisma.questions.findMany({
+        where: {
+          testId: {
+            has: context.params.id,
+          },
+        },
+      });
       return NextResponse.json(
-        { message: "success", data: test },
+        { message: "success", data: test, questionBase: questions },
         { status: 200 }
       );
     } else {

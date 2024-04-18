@@ -51,17 +51,16 @@ model classes {
 }
 
 model test {
-    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
     name        String
     description String
-    created_at  DateTime    @default(now())
+    created_at  DateTime @default(now())
     start_time  DateTime
     end_time    DateTime
     score       Int?
     Total       Int?
-    classId     String      @db.ObjectId
-    class       classes     @relation(fields: [classId], references: [id])
-    questions   questions[]
+    classId     String   @db.ObjectId
+    class       classes  @relation(fields: [classId], references: [id])
 }
 
 model questions {
@@ -74,5 +73,4 @@ model questions {
     code     String?
     choice   String[]
     testId   String[] @db.ObjectId
-    test     test?    @relation(fields: [testId], references: [id])
 }

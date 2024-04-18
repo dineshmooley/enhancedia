@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
             )
           : NextResponse.json({ message: "No data found" }, { status: 404 });
       }
-      if (req.nextUrl.searchParams.get("type") !== "psychometric") {
+      if (req.nextUrl.searchParams.get("type")) {
         const topics = Array.from(
           new Set(
             (

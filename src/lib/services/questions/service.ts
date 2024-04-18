@@ -60,6 +60,17 @@ export const CreateQuestion = async (body) => {
   return data;
 };
 
+export const QuestionToTest = async (id, test, work) => {
+  const res = await fetch(
+    `${URL}/api/questions/${id}?testId=${test}&action=${work}`,
+    {
+      method: "PUT",
+    }
+  );
+  const data = await res.json();
+  return data;
+};
+
 export const DeleteQuestion = async (id) => {
   const res = await fetch(`${URL}/api/questions/${id}`, {
     method: "DELETE",

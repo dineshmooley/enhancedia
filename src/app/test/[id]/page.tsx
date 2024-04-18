@@ -24,6 +24,7 @@ import {
   getPsychometricQuestions,
   getQuestionsByTopic,
   getTopicsByType,
+  QuestionToTest,
 } from "../../../lib/services/questions/service";
 import {
   Dialog,
@@ -42,6 +43,7 @@ import {
   SelectValue,
   SelectGroup,
 } from "../../(components)/ui/select";
+import { Trash, Trash2Icon } from "lucide-react";
 
 const TestById = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -49,12 +51,15 @@ const TestById = ({ params }: { params: { id: string } }) => {
   const [test, setTest] = useState<any>(null);
   const [topics, setTopics] = useState<any>(null);
   const [questions, setQuestions] = useState<any>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
+  const [open, setOpen] = useState(false);
 
   const fetchTest = async () => {
     try {
+      setOpen(false);
       const res = await GetTestService(params.id);
       if (res) {
-        setTest(res.data);
+        setTest(res);
       } else {
         toast.error("Failed to fetch test");
       }
@@ -103,6 +108,22 @@ const TestById = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const addQuestionToTest = async (selectedQuestion, action) => {
+    try {
+      const res = await QuestionToTest(selectedQuestion, params.id, action);
+      if (res) {
+        action == "add"
+          ? toast.success("Question added successfully")
+          : toast.success("Question removed successfully");
+        fetchTest();
+      } else {
+        toast.error("Failed to add question");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const deleteTest = async () => {
     try {
       const res = await DeleteTestService(params.id);
@@ -119,6 +140,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     fetchTest();
+    setSelectedQuestion(null);
   }, []);
 
   if (!test) {
@@ -127,12 +149,12 @@ const TestById = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <div className="container mt-5">
           <Card className=" dark:bg-slate-900 shadow-md">
             <div className="flex p-4 justify-between items-center">
               <h2 className="text-3xl font-bold tracking-tight me-4 align-middle">
-                {test.name}
+                {test.data.name}
               </h2>
               <div>
                 <DialogTrigger asChild>
@@ -199,7 +221,11 @@ const TestById = ({ params }: { params: { id: string } }) => {
                     {questions && (
                       <div className="grid gap-4">
                         <label htmlFor="question">Select Question</label>
-                        <Select>
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedQuestion(value);
+                          }}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select a question" />
                           </SelectTrigger>
@@ -221,7 +247,14 @@ const TestById = ({ params }: { params: { id: string } }) => {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit">ADD</Button>
+                    <Button
+                      type="submit"
+                      onClick={() => {
+                        addQuestionToTest(selectedQuestion, "add");
+                      }}
+                    >
+                      ADD
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
                 <Button variant="outline" className="me-3">
@@ -260,10 +293,21 @@ const TestById = ({ params }: { params: { id: string } }) => {
             <div className="p-5">
               <h2 className="text-2xl font-bold">Questions</h2>
               <div className="mt-5">
-                {test?.questions?.map((question: any) => (
-                  <div key={question.id} className="mt-3">
-                    <h3 className="text-xl font-bold">{question.question}</h3>
-                    <p>{question.answer}</p>
+                {test?.questionBase?.map((question: any, index: number) => (
+                  <div key={question.id} className="flex justify-between mt-3">
+                    <div className="">
+                      <h3 className="text-xl font-bold">
+                        {index + 1}. {question.question}
+                      </h3>
+                      <p>{question.answer}</p>
+                    </div>
+                    <Trash2Icon
+                      color="red"
+                      size={24}
+                      onClick={() => {
+                        addQuestionToTest(question.id, "remove");
+                      }}
+                    />
                   </div>
                 ))}
               </div>
