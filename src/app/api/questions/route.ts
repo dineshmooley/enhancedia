@@ -23,6 +23,51 @@ export async function GET(req: NextRequest) {
         }));
         return NextResponse.json({ topics: transfomed }, { status: 200 });
       }
+      if (req.nextUrl.searchParams.get("topic")) {
+        const data = await prisma.questions.findMany({
+          where: {
+            topic: req.nextUrl.searchParams.get("topic"),
+          },
+        });
+        return data != undefined
+          ? NextResponse.json(
+              { message: "success", data: data },
+              { status: 200 }
+            )
+          : NextResponse.json({ message: "No data found" }, { status: 404 });
+      }
+      if (req.nextUrl.searchParams.get("type") == "psychometric") {
+        const data = await prisma.questions.findMany({
+          where: {
+            type: "psychometric",
+          },
+        });
+        return data != undefined
+          ? NextResponse.json(
+              { message: "success", data: data },
+              { status: 200 }
+            )
+          : NextResponse.json({ message: "No data found" }, { status: 404 });
+      }
+      if (req.nextUrl.searchParams.get("type") !== "psychometric") {
+        const topics = Array.from(
+          new Set(
+            (
+              await prisma.questions.findMany({
+                where: {
+                  type: req.nextUrl.searchParams.get("type"),
+                },
+                select: {
+                  topic: true,
+                },
+              })
+            ).map((question) => question.topic)
+          )
+        ).map((topic) => ({ label: topic, value: topic }));
+        return topics.length > 0
+          ? NextResponse.json({ topics: topics }, { status: 200 })
+          : NextResponse.json({ message: "No data found" }, { status: 404 });
+      }
       const data = await prisma.questions.findMany();
       return NextResponse.json({ data: data }, { status: 200 });
     } else {
