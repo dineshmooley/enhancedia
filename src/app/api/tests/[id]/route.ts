@@ -39,6 +39,40 @@ export async function GET(
   }
 }
 
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  try {
+    const token = await getToken({
+      req,
+      secret: process.env.JWT_SECRET,
+    });
+    if (token.role == "admin") {
+      const body = await req.json();
+      delete body.id;
+      const test = await prisma.test.update({
+        where: { id: context.params.id },
+        data: body,
+      });
+      return NextResponse.json(
+        { message: "successfully updated", data: test },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: "Unauthorized to do this operation" },
+        { status: 401 }
+      );
+    }
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Error catch block", error: err.toString() },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   req: NextRequest,
   context: { params: { id: string } }

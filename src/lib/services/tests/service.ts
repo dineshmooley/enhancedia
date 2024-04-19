@@ -23,3 +23,15 @@ export const CreateTestService = async (data: any) => {
   const result = await res.json();
   return result;
 };
+
+export const UpdateTestService = async (id: string, data: any) => {
+  const res = await fetch(`/api/tests/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  return result;
+};

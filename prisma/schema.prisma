@@ -55,6 +55,7 @@ model test {
     name        String
     description String
     created_at  DateTime @default(now())
+    duration    Int?
     start_time  DateTime
     end_time    DateTime
     score       Int?

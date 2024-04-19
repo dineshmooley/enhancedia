@@ -16,6 +16,7 @@ import {
 import {
   GetTestService,
   DeleteTestService,
+  UpdateTestService,
 } from "../../../lib/services/tests/service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -115,6 +116,15 @@ const TestById = ({ params }: { params: { id: string } }) => {
         action == "add"
           ? toast.success("Question added successfully")
           : toast.success("Question removed successfully");
+        if (action == "add") {
+          test.data.Total = test.data.Total + res.data.marks;
+        } else if (action == "remove") {
+          test.data.Total = test.data.Total - res.data.marks;
+        }
+        const result = await UpdateTestService(test.data.id, test.data);
+        result
+          ? toast.success("Test updated successfully")
+          : toast.error("Failed to update test");
         fetchTest();
       } else {
         toast.error("Failed to add question");
@@ -154,7 +164,12 @@ const TestById = ({ params }: { params: { id: string } }) => {
           <Card className=" dark:bg-slate-900 shadow-md">
             <div className="flex p-4 justify-between items-center">
               <h2 className="text-3xl font-bold tracking-tight me-4 align-middle">
-                {test.data.name}
+                {test.data.name}{" "}
+                <span className="text-sm">
+                  {test.data.Total
+                    ? `(Total Marks: ${test.data.Total})`
+                    : `Total Marks: 0`}
+                </span>
               </h2>
               <div>
                 <DialogTrigger asChild>
@@ -297,7 +312,8 @@ const TestById = ({ params }: { params: { id: string } }) => {
                   <div key={question.id} className="flex justify-between mt-3">
                     <div className="">
                       <h3 className="text-xl font-bold">
-                        {index + 1}. {question.question}
+                        {index + 1}. {question.question}{" "}
+                        {question.marks ? `(${question.marks} marks)` : ""}
                       </h3>
                       <p>{question.answer}</p>
                     </div>
