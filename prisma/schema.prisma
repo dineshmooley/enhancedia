@@ -29,6 +29,7 @@ model student {
     role            String
     classId         String   @db.ObjectId
     class           classes? @relation(fields: [classId], references: [id])
+    results         result[]
 }
 
 model departments {
@@ -48,6 +49,7 @@ model classes {
     department   departments @relation(fields: [departmentId], references: [id], onDelete: Cascade)
     students     student[]
     tests        test[]
+    result       result[]
 }
 
 model test {
@@ -62,6 +64,7 @@ model test {
     Total       Int?
     classId     String   @db.ObjectId
     class       classes  @relation(fields: [classId], references: [id])
+    results     result[]
 }
 
 model questions {
@@ -74,4 +77,26 @@ model questions {
     code     String?
     choice   String[]
     testId   String[] @db.ObjectId
+}
+
+model result {
+    id                String   @id @default(auto()) @map("_id") @db.ObjectId
+    studentId         String   @db.ObjectId
+    student           student  @relation(fields: [studentId], references: [id])
+    testId            String   @db.ObjectId
+    test              test     @relation(fields: [testId], references: [id])
+    classId           String   @db.ObjectId
+    class             classes  @relation(fields: [classId], references: [id])
+    openness          Float?
+    conscientiousness Float?
+    extraversion      Float?
+    agreeableness     Float?
+    neuroticism       Float?
+    aptitude          Float?
+    core              Float?
+    answers           String[]
+    score             Float?
+    status            String
+    started_at        DateTime
+    ended_at          DateTime
 }
