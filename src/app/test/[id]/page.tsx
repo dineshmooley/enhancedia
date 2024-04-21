@@ -45,6 +45,9 @@ import {
   SelectGroup,
 } from "../../(components)/ui/select";
 import { Trash, Trash2Icon } from "lucide-react";
+import { Label } from "../../(components)/ui/label";
+import { Input } from "../../(components)/ui/input";
+import { parse } from "path";
 
 const TestById = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -54,6 +57,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
   const [questions, setQuestions] = useState<any>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [open, setOpen] = useState(false);
+  const [dialog, setDialog] = useState(null);
 
   const fetchTest = async () => {
     try {
@@ -121,13 +125,24 @@ const TestById = ({ params }: { params: { id: string } }) => {
         } else if (action == "remove") {
           test.data.Total = test.data.Total - res.data.marks;
         }
-        const result = await UpdateTestService(test.data.id, test.data);
-        result
-          ? toast.success("Test updated successfully")
-          : toast.error("Failed to update test");
+        updateTest();
         fetchTest();
       } else {
         toast.error("Failed to add question");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateTest = async () => {
+    try {
+      const res = await UpdateTestService(test.data.id, test.data);
+      if (res) {
+        toast.success("Test updated successfully");
+        fetchTest();
+      } else {
+        toast.error("Failed to update test");
       }
     } catch (err) {
       console.error(err);
@@ -139,7 +154,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
       const res = await DeleteTestService(params.id);
       if (res) {
         toast.success("Test deleted successfully");
-        router.push(`/class/${test.classId} `);
+        router.push(`/class/${test.data.classId}`);
       } else {
         toast.error("Failed to delete test");
       }
@@ -173,45 +188,33 @@ const TestById = ({ params }: { params: { id: string } }) => {
               </h2>
               <div>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="me-3">
+                  <Button
+                    variant="outline"
+                    className="me-3"
+                    onClick={() => {
+                      setDialog({
+                        title: "Select the topic and question",
+                        description: "add questions to test",
+                        action: "add",
+                      });
+                    }}
+                  >
                     Add Questions
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="">
                   <DialogHeader>
-                    <DialogTitle>Select the topic and question</DialogTitle>
+                    <DialogTitle>{dialog?.title}</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-4">
-                      <label htmlFor="topic">Select Type</label>
-                      <Select
-                        onValueChange={(value) => {
-                          value == "psychometric"
-                            ? fetchPsychometric()
-                            : fetchTopics(value);
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a topic" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Type</SelectLabel>
-                            <SelectItem value="psychometric">
-                              Psychometric
-                            </SelectItem>
-                            <SelectItem value="aptitude">Aptitude</SelectItem>
-                            <SelectItem value="core">Core</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    {topics && (
+                  {dialog?.action == "add" ? (
+                    <div className="grid gap-4 py-4">
                       <div className="grid gap-4">
-                        <label htmlFor="topic">Select Topic</label>
+                        <label htmlFor="topic">Select Type</label>
                         <Select
                           onValueChange={(value) => {
-                            fetchQuestionsByTopic(value);
+                            value == "psychometric"
+                              ? fetchPsychometric()
+                              : fetchTopics(value);
                           }}
                         >
                           <SelectTrigger>
@@ -219,62 +222,155 @@ const TestById = ({ params }: { params: { id: string } }) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>Topics</SelectLabel>
-                              {topics?.map((topic: any) => (
-                                <SelectItem
-                                  key={topic.value}
-                                  value={topic.value}
-                                >
-                                  {topic.label}
-                                </SelectItem>
-                              ))}
+                              <SelectLabel>Type</SelectLabel>
+                              <SelectItem value="psychometric">
+                                Psychometric
+                              </SelectItem>
+                              <SelectItem value="aptitude">Aptitude</SelectItem>
+                              <SelectItem value="core">Core</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
                       </div>
-                    )}
-                    {questions && (
-                      <div className="grid gap-4">
-                        <label htmlFor="question">Select Question</label>
-                        <Select
-                          onValueChange={(value) => {
-                            setSelectedQuestion(value);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a question" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Questions</SelectLabel>
-                              {questions?.map((question: any) => (
-                                <SelectItem
-                                  key={question.id}
-                                  value={question.id}
-                                >
-                                  {question.question}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                      {topics && (
+                        <div className="grid gap-4">
+                          <label htmlFor="topic">Select Topic</label>
+                          <Select
+                            onValueChange={(value) => {
+                              fetchQuestionsByTopic(value);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a topic" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Topics</SelectLabel>
+                                {topics?.map((topic: any) => (
+                                  <SelectItem
+                                    key={topic.value}
+                                    value={topic.value}
+                                  >
+                                    {topic.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                      {questions && (
+                        <div className="grid gap-4">
+                          <label htmlFor="question">Select Question</label>
+                          <Select
+                            onValueChange={(value) => {
+                              setSelectedQuestion(value);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a question" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Questions</SelectLabel>
+                                {questions?.map((question: any) => (
+                                  <SelectItem
+                                    key={question.id}
+                                    value={question.id}
+                                  >
+                                    {question.question}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Title
+                        </Label>
+                        <Input
+                          className="col-span-3"
+                          placeholder={test.data.name}
+                          onChange={(e) =>
+                            setTest({
+                              ...test,
+                              data: { ...test.data, name: e.target.value },
+                            })
+                          }
+                        />
                       </div>
-                    )}
-                  </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Description
+                        </Label>
+                        <Input
+                          className="col-span-3"
+                          placeholder={test.data.description}
+                          onChange={(e) =>
+                            setTest({
+                              ...test,
+                              data: {
+                                ...test.data,
+                                description: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Duration (in mins)
+                        </Label>
+                        <Input
+                          type="number"
+                          className="col-span-3"
+                          placeholder={test.data.duration}
+                          onChange={(e) =>
+                            setTest({
+                              ...test,
+                              data: {
+                                ...test.data,
+                                duration: parseInt(e.target.value),
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                   <DialogFooter>
                     <Button
                       type="submit"
                       onClick={() => {
-                        addQuestionToTest(selectedQuestion, "add");
+                        dialog.action == "add"
+                          ? addQuestionToTest(selectedQuestion, "add")
+                          : updateTest();
                       }}
                     >
-                      ADD
+                      {dialog?.action}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
-                <Button variant="outline" className="me-3">
-                  Edit
-                </Button>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="me-3"
+                    onClick={() => {
+                      setDialog({
+                        title: "Edit",
+                        description: "Edit the details",
+                        action: "edit",
+                      });
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </DialogTrigger>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">Delete</Button>

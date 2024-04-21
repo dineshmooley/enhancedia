@@ -33,7 +33,6 @@ export const authOptions: NextAuthOptions = {
             },
           });
           if (user && (await bcrypt.compare(password, user.password))) {
-            console.log("the user is ", user);
             return user;
           }
         } else if (role == "student") {
@@ -43,7 +42,6 @@ export const authOptions: NextAuthOptions = {
             },
           });
           if (user && (await bcrypt.compare(password, user.password))) {
-            console.log("the user is ", user);
             return user;
           }
         }
@@ -53,7 +51,10 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }: { token: JWT; user: any }) {
-      if (user) token.role = user.role;
+      if (user) {
+        token.role = user.role;
+        if (token.role == "student") token.classId = user.classId;
+      }
       return token;
     },
     async session({ session, token }: { session: any; token: any; user: any }) {

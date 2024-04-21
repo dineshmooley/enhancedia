@@ -10,7 +10,7 @@ export async function GET(
       req: request,
       secret: process.env.JWT_SECRET,
     });
-    if (token.role == "admin") {
+    if (token.role == "admin" || token.role == "student") {
       const classes = await prisma.classes.findUniqueOrThrow({
         where: { id: context.params.id },
         include: {
