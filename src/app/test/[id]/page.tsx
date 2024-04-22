@@ -44,10 +44,9 @@ import {
   SelectValue,
   SelectGroup,
 } from "../../(components)/ui/select";
-import { Trash, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { Label } from "../../(components)/ui/label";
 import { Input } from "../../(components)/ui/input";
-import { parse } from "path";
 
 const TestById = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -382,8 +381,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
                       </AlertDialogTitle>
                       <AlertDialogDescription>
                         This action cannot be undone. This will permanently
-                        delete your account and remove your data from our
-                        servers.
+                        delete test and associated results.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

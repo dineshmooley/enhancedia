@@ -83,6 +83,9 @@ export async function DELETE(
       secret: process.env.JWT_SECRET,
     });
     if (token.role == "admin") {
+      const output = await prisma.result.deleteMany({
+        where: { testId: context.params.id },
+      });
       const test = await prisma.test.delete({
         where: { id: context.params.id },
       });

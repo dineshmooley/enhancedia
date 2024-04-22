@@ -51,7 +51,6 @@ export default function Departments({ params }: { params: { id: string } }) {
     try {
       const res = await getClass(id);
       if (res) {
-        console.log("the class ", res);
         setClassData(res);
       }
     } catch (err) {

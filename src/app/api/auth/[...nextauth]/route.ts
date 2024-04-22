@@ -53,7 +53,10 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }: { token: JWT; user: any }) {
       if (user) {
         token.role = user.role;
-        if (token.role == "student") token.classId = user.classId;
+        if (token.role == "student") {
+          token.id = user.id;
+          token.classId = user.classId;
+        }
       }
       return token;
     },

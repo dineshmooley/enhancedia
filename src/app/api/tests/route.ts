@@ -15,6 +15,26 @@ export async function POST(req: NextRequest) {
           ...body,
         },
       });
+      const classes = await prisma.classes.findUniqueOrThrow({
+        where: { id: body.classId as string },
+        include: {
+          students: true,
+        },
+      });
+      let datalist = [];
+      for (const student of classes.students) {
+        datalist.push({
+          studentId: student.id,
+          testId: result.id,
+          classId: body.classId,
+          status: "pending",
+          started_at: new Date().toISOString(),
+          ended_at: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
+        });
+      }
+      await prisma.result.createMany({
+        data: datalist,
+      });
       return NextResponse.json(
         { message: "success", data: result },
         { status: 200 }

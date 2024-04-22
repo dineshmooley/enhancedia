@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
       req: request,
       secret: process.env.JWT_SECRET,
     });
-    if (token.role == "admin") {
+    if (token.role == "admin" || token.role == "student") {
       const departments = await prisma.departments.findMany({
         orderBy: { name: "asc" },
       });

@@ -10,13 +10,26 @@ export async function GET(
       req: request,
       secret: process.env.JWT_SECRET,
     });
-    if (token.role == "admin" || token.role == "student") {
+    if (token.role == "admin") {
       const classes = await prisma.classes.findUniqueOrThrow({
         where: { id: context.params.id },
         include: {
           students: true,
           department: true,
           tests: true,
+        },
+      });
+      return NextResponse.json(
+        { message: "success", data: classes },
+        { status: 200 }
+      );
+    } else if (token.role == "student") {
+      const classes = await prisma.classes.findUniqueOrThrow({
+        where: { id: context.params.id },
+        include: {
+          students: true,
+          tests: true,
+          department: true,
         },
       });
       return NextResponse.json(

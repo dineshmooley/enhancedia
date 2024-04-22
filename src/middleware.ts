@@ -7,17 +7,13 @@ export default withAuth(
     const token = await getToken({ req, secret: process.env.JWT_SECRET });
     console.log("req", req.nextUrl.pathname);
     if (token.role == "student") {
-      const allowedUrls = [
-        `/class/${token.classId}`,
-        `/tests/*`,
-        `/profile/${token.id}`,
-      ];
+      const allowedUrls = [`/class/${token.classId}`, `/profile/${token.id}`];
       if (!allowedUrls.includes(req.nextUrl.pathname)) {
         return NextResponse.rewrite(
           new URL(`/class/${token.classId}`, req.nextUrl)
         );
       }
-      return NextResponse.rewrite(req.nextUrl.pathname);
+      return NextResponse.rewrite(new URL(req.nextUrl.pathname, req.nextUrl));
     }
   },
   {
