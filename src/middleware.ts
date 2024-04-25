@@ -8,7 +8,10 @@ export default withAuth(
     console.log("req", req.nextUrl.pathname);
     if (token.role == "student") {
       const allowedUrls = [`/class/${token.classId}`, `/profile/${token.id}`];
-      if (!allowedUrls.includes(req.nextUrl.pathname)) {
+      if (
+        !allowedUrls.includes(req.nextUrl.pathname) &&
+        req.nextUrl.pathname.split("/")[1] !== "test"
+      ) {
         return NextResponse.rewrite(
           new URL(`/class/${token.classId}`, req.nextUrl)
         );

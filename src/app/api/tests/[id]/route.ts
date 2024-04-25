@@ -10,7 +10,7 @@ export async function GET(
       req,
       secret: process.env.JWT_SECRET,
     });
-    if (token.role == "admin") {
+    if (token.role == "admin" || token.role == "student") {
       const test = await prisma.test.findUnique({
         where: { id: context.params.id },
       });
