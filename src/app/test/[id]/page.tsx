@@ -191,7 +191,9 @@ const TestById = ({ params }: { params: { id: string } }) => {
   if (role == "student") {
     return (
       <>
-        <p>test begins here</p>
+        <div className="container mt-5">
+          <p>test begins here</p>
+        </div>
       </>
     );
   }
