@@ -18,6 +18,7 @@ import {
   DeleteTestService,
   UpdateTestService,
 } from "../../../lib/services/tests/service";
+import { getRole } from "../../../lib/services/users/service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -47,10 +48,12 @@ import {
 import { Trash2Icon } from "lucide-react";
 import { Label } from "../../(components)/ui/label";
 import { Input } from "../../(components)/ui/input";
+import { useSession } from "next-auth/react";
 
 const TestById = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const [type, setType] = useState<string>("");
+  const { data: token } = useSession();
+  const [role, setRole] = useState<string>("");
   const [test, setTest] = useState<any>(null);
   const [topics, setTopics] = useState<any>(null);
   const [questions, setQuestions] = useState<any>(null);
@@ -58,12 +61,26 @@ const TestById = ({ params }: { params: { id: string } }) => {
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(null);
 
+  const fetchRole = async () => {
+    try {
+      const res = await getRole();
+      if (res) {
+        setRole(res.role);
+      } else {
+        toast.error("Failed to fetch role");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchTest = async () => {
     try {
       setOpen(false);
       const res = await GetTestService(params.id);
       if (res) {
         setTest(res);
+        fetchRole();
       } else {
         toast.error("Failed to fetch test");
       }
@@ -171,6 +188,14 @@ const TestById = ({ params }: { params: { id: string } }) => {
     return <div>Loading...</div>;
   }
 
+  if (role == "student") {
+    return (
+      <>
+        <p>test begins here</p>
+      </>
+    );
+  }
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -183,6 +208,10 @@ const TestById = ({ params }: { params: { id: string } }) => {
                   {test.data.Total
                     ? `(Total Marks: ${test.data.Total})`
                     : `Total Marks: 0`}
+                </span>
+                <span className="text-sm">
+                  {" ,"}
+                  Duration: {test.data.duration} mins
                 </span>
               </h2>
               <div>

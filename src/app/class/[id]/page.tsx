@@ -231,21 +231,29 @@ export default function Departments({ params }: { params: { id: string } }) {
                           }}
                           className="col-span-3"
                           type="datetime-local"
+                          min={new Date().toISOString().substring(0, 16)}
                         />
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                          End Time
-                        </Label>
-                        <Input
-                          onChange={(e) => {
-                            const val = new Date(e.target.value).toISOString();
-                            setData({ ...data, end_time: val });
-                          }}
-                          className="col-span-3"
-                          type="datetime-local"
-                        />
-                      </div>
+                      {data?.start_time && (
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="name" className="text-right">
+                            End Time
+                          </Label>
+                          <Input
+                            onChange={(e) => {
+                              const val = new Date(
+                                e.target.value
+                              ).toISOString();
+                              setData({ ...data, end_time: val });
+                            }}
+                            className="col-span-3"
+                            type="datetime-local"
+                            min={new Date(data.start_time)
+                              .toISOString()
+                              .substring(0, 16)}
+                          />
+                        </div>
+                      )}
                       <div className="grid mt-3 items-center gap-4">
                         <Label htmlFor="name" className="font-semibold">
                           Note: Add Questions after Creation

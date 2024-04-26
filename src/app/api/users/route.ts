@@ -52,6 +52,20 @@ export async function GET(request: NextRequest) {
         });
         return NextResponse.json({ message: users }, { status: 200 });
       }
+      return NextResponse.json(
+        { message: "successfull", role: token.role },
+        { status: 200 }
+      );
+    } else if (token.role == "staff") {
+      return NextResponse.json(
+        { message: "successfull", role: token.role },
+        { status: 200 }
+      );
+    } else if (token.role == "student") {
+      return NextResponse.json(
+        { message: "successfull", role: token.role },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ message: "Unauthorized" }, { status: 402 });
     }
