@@ -23,3 +23,11 @@ export const getDepartmentStaffs = async (id: string) => {
   const resData = await res.json();
   return resData;
 };
+
+export const getRole = async () => {
+  const res = await fetch(`${URL}/api/users`, {
+    method: "GET",
+  });
+  const resData = await res.json();
+  return resData;
+};
