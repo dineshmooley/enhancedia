@@ -28,6 +28,7 @@ import {
   getTopicsByType,
   QuestionToTest,
 } from "../../../lib/services/questions/service";
+import { getResult } from "../../../lib/services/result/service";
 import {
   Dialog,
   DialogTrigger,
@@ -56,6 +57,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
   const [role, setRole] = useState<string>("");
   const [test, setTest] = useState<any>(null);
   const [topics, setTopics] = useState<any>(null);
+  const [result, setResult] = useState<any>(null);
   const [questions, setQuestions] = useState<any>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [open, setOpen] = useState(false);
@@ -179,9 +181,23 @@ const TestById = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const fetchResult = async () => {
+    try {
+      const res = await getResult(params.id);
+      if (res) {
+        setResult(res.data);
+      } else {
+        toast.error("Failed to fetch result");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchTest();
     setSelectedQuestion(null);
+    fetchResult();
   }, []);
 
   if (!test) {
@@ -193,6 +209,7 @@ const TestById = ({ params }: { params: { id: string } }) => {
       <>
         <div className="container mt-5">
           <p>test begins here</p>
+          <p>{result?.status}</p>
         </div>
       </>
     );
