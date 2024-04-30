@@ -80,10 +80,11 @@ const TestById = ({ params }: { params: { id: string } }) => {
     try {
       setOpen(false);
       const res = await GetTestService(params.id);
-      if (res) {
+      if (res.data != null) {
         setTest(res);
         fetchRole();
       } else {
+        router.push("/");
         toast.error("Failed to fetch test");
       }
     } catch (err) {
@@ -208,8 +209,33 @@ const TestById = ({ params }: { params: { id: string } }) => {
     return (
       <>
         <div className="container mt-5">
-          <p>test begins here</p>
-          <p>{result?.status}</p>
+          {test.data.end_time < new Date().toISOString() ? (
+            <Card className=" dark:bg-slate-900 shadow-md">
+              <div className="flex p-4 justify-between items-center">
+                <h2 className="text-xl font-bold tracking-tight me-4 align-middle">
+                  Test is completed
+                </h2>
+              </div>
+            </Card>
+          ) : result.status == "pending" ? (
+            <Card className=" dark:bg-slate-900 shadow-md">
+              <div className="flex p-4 justify-between items-center">
+                <h2 className="text-xl font-bold tracking-tight me-4 align-middle">
+                  Are you ready to take up the test?
+                </h2>
+                <div>
+                  <Button variant="default">Start</Button>
+                  <Button variant="outline" className="ms-2">
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ) : result.status == "started" ? (
+            <div>test is started</div>
+          ) : result.status == "completed" ? (
+            <div>test is completed</div>
+          ) : null}
         </div>
       </>
     );

@@ -33,6 +33,7 @@ import { Separator } from "../../(components)/ui/separator";
 import { getClass } from "../../../lib/services/class/service";
 import { PlusIcon } from "lucide-react";
 import { CreateTestService } from "../../../lib/services/tests/service";
+import { getRole } from "../../../lib/services/users/service";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -46,6 +47,7 @@ export default function Departments({ params }: { params: { id: string } }) {
   const [Classdata, setClassData] = useState(null);
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
+  const [role, setRole] = useState(null);
 
   const GetClass = async () => {
     try {
@@ -71,8 +73,20 @@ export default function Departments({ params }: { params: { id: string } }) {
     }
   };
 
+  const userRole = async () => {
+    try {
+      const res = await getRole();
+      if (res) {
+        setRole(res.role);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     GetClass();
+    userRole();
   }, []);
 
   if (!Classdata) return <div>Loading...</div>;
@@ -87,65 +101,68 @@ export default function Departments({ params }: { params: { id: string } }) {
                 <h2 className="text-3xl font-bold tracking-tight me-4 align-middle">
                   Class Overview
                 </h2>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="font-semibold gap-1">
-                      <span className="sr-only">Open menu</span>
-                      More Options
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DialogTrigger
-                      asChild
-                      onClick={() =>
-                        setDialogDetails({
-                          title: "Edit Class",
-                          description: "Enter the details to edit the class!.",
-                          action: "Edit !",
-                        })
-                      }
-                    >
-                      <DropdownMenuItem>Edit Class</DropdownMenuItem>
-                    </DialogTrigger>
+                {role === "admin" ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="font-semibold gap-1">
+                        <span className="sr-only">Open menu</span>
+                        More Options
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DialogTrigger
+                        asChild
+                        onClick={() =>
+                          setDialogDetails({
+                            title: "Edit Class",
+                            description:
+                              "Enter the details to edit the class!.",
+                            action: "Edit !",
+                          })
+                        }
+                      >
+                        <DropdownMenuItem>Edit Class</DropdownMenuItem>
+                      </DialogTrigger>
 
-                    <DropdownMenuSeparator />
-                    <DialogTrigger
-                      asChild
-                      onClick={() => {
-                        setDialogDetails({
-                          title: "Add Advisors",
-                          description:
-                            "Enter the details to add advisors to the class!.",
-                          action: "Add",
-                        });
-                      }}
-                    >
-                      <DropdownMenuItem>Add Advisors</DropdownMenuItem>
-                    </DialogTrigger>
+                      <DropdownMenuSeparator />
+                      <DialogTrigger
+                        asChild
+                        onClick={() => {
+                          setDialogDetails({
+                            title: "Add Advisors",
+                            description:
+                              "Enter the details to add advisors to the class!.",
+                            action: "Add",
+                          });
+                        }}
+                      >
+                        <DropdownMenuItem>Add Advisors</DropdownMenuItem>
+                      </DialogTrigger>
 
-                    <DropdownMenuSeparator />
+                      <DropdownMenuSeparator />
 
-                    <DialogTrigger
-                      asChild
-                      onClick={() => {
-                        setDialogDetails({
-                          title: "Remove Advisors",
-                          description:
-                            "Enter the details to remove advisors from the class!.",
-                          action: "Remove",
-                        });
-                      }}
-                    >
-                      <DropdownMenuItem>Remove Advisors</DropdownMenuItem>
-                    </DialogTrigger>
+                      <DialogTrigger
+                        asChild
+                        onClick={() => {
+                          setDialogDetails({
+                            title: "Remove Advisors",
+                            description:
+                              "Enter the details to remove advisors from the class!.",
+                            action: "Remove",
+                          });
+                        }}
+                      >
+                        <DropdownMenuItem>Remove Advisors</DropdownMenuItem>
+                      </DialogTrigger>
 
-                    <DropdownMenuSeparator />
+                      <DropdownMenuSeparator />
 
-                    <Button className="bg-red-800 text-white">
-                      Delete Class
-                    </Button>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <Button className="bg-red-800 text-white">
+                        Delete Class
+                      </Button>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
               </div>
               <Separator />
               <div className="flex p-2 max-md:flex-col max-md:divide-y md:flex-row md:divide-x ">
@@ -181,16 +198,18 @@ export default function Departments({ params }: { params: { id: string } }) {
               <Card className="p-5">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setData(null);
-                        setData({ classId: id });
-                      }}
-                    >
-                      <PlusIcon />
-                      Add Test
-                    </Button>
+                    {role === "admin" ? (
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          setData(null);
+                          setData({ classId: id });
+                        }}
+                      >
+                        <PlusIcon />
+                        Add Test
+                      </Button>
+                    ) : null}
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
