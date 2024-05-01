@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { updateStatus } from "../../lib/services/result/service";
 
-const Timer = ({ duration }) => {
+const Timer = ({ duration, data }) => {
   // Convert duration from minutes to seconds
   const [timeLeft, setTimeLeft] = useState(duration * 60);
 
@@ -17,7 +18,11 @@ const Timer = ({ duration }) => {
   // Convert timeLeft from seconds to minutes and seconds
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
-
+  if (minutes < 0 && seconds < 1) {
+    data.status = "completed";
+    data.ended_at = new Date().toISOString();
+    updateStatus(data);
+  }
   return (
     <div>
       Time left: {minutes}:{seconds < 10 ? "0" : ""}
